@@ -20,6 +20,10 @@ const ProjectSchema = new mongoose.Schema({
     ref: 'users',
     default: null,
   },
+  assignmentDetails: {
+    estimatedModules: Number,
+    estimatedDeadlineForEntireProject: String // YYYY-MM-DD
+  },
   // List of solvers who requested to work on this
   requests: [{
     solverId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
@@ -34,7 +38,6 @@ const ProjectSchema = new mongoose.Schema({
   tasks: [{
     title: String,
     description: String,
-    deadline: String, // YYYY-MM-DD
     status: {
       type: String,
       enum: ['pending', 'submitted', 'accepted', 'rejected'],

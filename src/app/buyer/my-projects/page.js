@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
+ 
 "use client";
 import { useState, useEffect } from "react";
 import Link from 'next/link';
@@ -67,7 +67,7 @@ export default function MyProjectsPage() {
 
             {/* Filter Controls */}
             <div className="bg-gray-50 p-4 border border-gray-200 mb-6 flex flex-wrap gap-4">
-                <div className="flex-1 min-w-[200px]">
+                <div className="flex-1 min-w-50">
                     <label className="block text-xs font-bold mb-1">Search Title</label>
                     <input 
                         className="w-full p-2 border border-black" 
@@ -79,7 +79,7 @@ export default function MyProjectsPage() {
                 <div>
                      <label className="block text-xs font-bold mb-1">Status</label>
                      <select 
-                        className="p-2 border border-black min-w-[150px]"
+                        className="p-2 border border-black min-w-37.5"
                         value={statusFilter}
                         onChange={e => setStatusFilter(e.target.value)}
                      >
@@ -101,7 +101,7 @@ export default function MyProjectsPage() {
                 <div>
                     <label className="block text-xs font-bold mb-1">Sort By</label>
                     <select 
-                        className="p-2 border border-black min-w-[150px]"
+                        className="p-2 border border-black min-w-37.5"
                         value={sortBy}
                         onChange={e => setSortBy(e.target.value)}
                     >
