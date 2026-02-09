@@ -113,9 +113,9 @@ export default function SolverDashboard() {
                     <div className="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
                         <span className="font-bold text-lg">${project.budget}</span>
                         {/* Placeholder for Apply logic (next step) */}
-                        <button className="bg-black text-white px-4 py-2 text-sm font-bold hover:bg-gray-800 transition">
+                        <Link href={`/solver/projects/${project._id}`} className="bg-black text-white px-4 py-2 text-sm font-bold hover:bg-gray-800 transition">
                             View Details
-                        </button>
+                        </Link>
                     </div>
                 </div>
             ))}

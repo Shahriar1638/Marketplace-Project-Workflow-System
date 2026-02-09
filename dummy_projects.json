@@ -1,0 +1,52 @@
+[
+  {
+    "title": "E-Commerce Mobile App Development",
+    "description": "We are looking for an experienced React Native developer to build a cross-platform mobile application for our clothing brand. The app needs to support user authentication, product browsing, a shopping cart, and Stripe payment integration. The design is already finalized in Figma.",
+    "techStack": [
+      "React Native",
+      "Expo",
+      "Stripe",
+      "Node.js"
+    ],
+    "buyerId": { "$oid": "69881f5ee696d6a37a61aee3" },
+    "assignedSolverId": null,
+    "requests": [],
+    "tasks": [],
+    "status": "open",
+    "budget": 3500,
+    "createdAt": "2026-02-09"
+  },
+  {
+    "title": "Corporate Website Redesign",
+    "description": "Our law firm needs a modern, responsive website. The current site is outdated. We need a clean, professional design with a blog section, contact forms, and team profiles. SEO optimization is a must.",
+    "techStack": [
+      "Next.js",
+      "Tailwind CSS",
+      "Sanity CMS"
+    ],
+    "buyerId": { "$oid": "69881f5ee696d6a37a61aee3" },
+    "assignedSolverId": null,
+    "requests": [],
+    "tasks": [],
+    "status": "open",
+    "budget": 1200,
+    "createdAt": "2026-02-08"
+  },
+  {
+    "title": "Python Data Scraper for Real Estate",
+    "description": "I need a Python script to scrape real estate listings from 3 major property websites daily. The data should be cleaned and saved into a MongoDB database. Needs to handle proxies and captchas.",
+    "techStack": [
+      "Python",
+      "Selenium",
+      "BeautifulSoup",
+      "MongoDB"
+    ],
+    "buyerId": { "$oid": "69881f5ee696d6a37a61aee3" },
+    "assignedSolverId": null,
+    "requests": [],
+    "tasks": [],
+    "status": "open",
+    "budget": 500,
+    "createdAt": "2026-02-09"
+  }
+]

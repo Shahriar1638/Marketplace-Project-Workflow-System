@@ -12,18 +12,23 @@ const ProjectSchema = new mongoose.Schema({
   techStack: [String], // Array of skills/tools e.g., ['React', 'Node.js']
   buyerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'users',
     required: true,
   },
   assignedSolverId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'users',
     default: null,
   },
   // List of solvers who requested to work on this
   requests: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    solverId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
+    estimatedModules: Number,
+    description: String,
+    deadline: String,
+    phoneNumber: String, // Optional, only if shared
+    status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
+    submittedAt: { type: String, default: () => new Date().toISOString().split('T')[0] }
   }],
   // Tasks/Milestones created by Solver (or Buyer initially)
   tasks: [{
@@ -53,4 +58,4 @@ const ProjectSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.models.Project || mongoose.model('projects', ProjectSchema);
+export default mongoose.models.projects || mongoose.model('projects', ProjectSchema);
