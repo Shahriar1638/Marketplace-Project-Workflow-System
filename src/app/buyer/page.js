@@ -1,30 +1,77 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { Plus, Compass, List } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-export default function BuyerDashboard() {
+export default function BuyerHome() {
+  const { data: session } = useSession();
+  
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 18) return "Good Afternoon";
+    return "Good Evening";
+  };
+
   return (
-    <div className="min-h-screen p-8 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Buyer Dashboard</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Create Project Card */}
-        <Link href="/buyer/create-project" className="group block p-8 border border-black hover:bg-black hover:text-white transition h-64 flex flex-col justify-center items-center text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            <h2 className="text-2xl font-bold mb-2">Create New Project</h2>
-            <p className="text-gray-600 group-hover:text-gray-300">Post a new project and find talent.</p>
-        </Link>
+    <div className="space-y-12">
+      {/* Hero Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-center py-16 bg-linear-to-br from-blue-50 to-indigo-50 rounded-3xl border border-blue-100 relative overflow-hidden"
+      >
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid-pattern.svg')] opacity-10"></div>
+        <div className="relative z-10">
+            <h1 className="text-5xl font-extrabold text-blue-900 tracking-tight mb-4">
+            {getGreeting()}, {session?.user?.name || 'Buyer'}!
+            </h1>
+            <p className="text-xl text-blue-700 max-w-2xl mx-auto mb-8">
+            Ready to bring your next idea to life? Post a project and connect with top talent today.
+            </p>
+            <div className="flex justify-center gap-4">
+                <Link href="/buyer/create-project" className="px-8 py-3 bg-black text-white font-bold rounded-full shadow-lg hover:bg-gray-800 transition-transform hover:scale-105 flex items-center gap-2">
+                    <Plus size={20} />
+                    Create New Project
+                </Link>
+                <Link href="/buyer/my-projects" className="px-8 py-3 bg-white text-black font-bold border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors flex items-center gap-2">
+                    <List size={20} />
+                    My Projects
+                </Link>
+            </div>
+        </div>
+      </motion.div>
 
-        {/* View My Projects Card */}
-        <Link href="/buyer/my-projects" className="group block p-8 border border-black hover:bg-black hover:text-white transition h-64 flex flex-col justify-center items-center text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
-            <h2 className="text-2xl font-bold mb-2">My Projects</h2>
-            <p className="text-gray-600 group-hover:text-gray-300">Manage your active projects and requests.</p>
-        </Link>
+      {/* Featured / Explore Section Placeholder */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+         <motion.div 
+            whileHover={{ scale: 1.02 }}
+            className="p-8 bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer group"
+         >
+            <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                <Compass size={24} />
+            </div>
+            <h3 className="text-2xl font-bold mb-2">Explore Ideas</h3>
+            <p className="text-gray-500 mb-4">Browse projects from other buyers to see what's trending in the marketplace.</p>
+            <Link href="/buyer/explore" className="text-purple-600 font-bold underline decoration-2 underline-offset-4 group-hover:text-purple-800">Start Exploring →</Link>
+         </motion.div>
+
+         <motion.div 
+            whileHover={{ scale: 1.02 }}
+            className="p-8 bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer group"
+         >
+            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-600 group-hover:text-white transition-colors">
+                <List size={24} />
+            </div>
+            <h3 className="text-2xl font-bold mb-2">Manage Projects</h3>
+            <p className="text-gray-500 mb-4">Track progress, review submissions, and manage your active listings.</p>
+            <Link href="/buyer/my-projects" className="text-green-600 font-bold underline decoration-2 underline-offset-4 group-hover:text-green-800">Go to Dashboard →</Link>
+         </motion.div>
       </div>
+
     </div>
   );
 }

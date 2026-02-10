@@ -5,7 +5,10 @@ import { NextResponse } from "next/server";
 export async function GET(req) {
     try {
         await dbConnect();
-        const projects = await Project.find({}).sort({ createdAt: -1 });
+        const projects = await Project.find({})
+            .populate('buyerId', 'name email')
+            .populate('assignedSolverId', 'name email')
+            .sort({ createdAt: -1 });
         return NextResponse.json(projects);
     } catch (error) {
         return NextResponse.json({ message: "Error fetching projects" }, { status: 500 });

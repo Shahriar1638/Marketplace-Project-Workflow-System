@@ -1,0 +1,36 @@
+import dbConnect from "@/lib/db";
+import User from "@/models/User";
+import Project from "@/models/Project";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../auth/[...nextauth]/route";
+import { NextResponse } from "next/server";
+
+export async function GET(req) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
+    }
+
+    await dbConnect();
+
+    const totalUsers = await User.countDocuments();
+    const totalProjects = await Project.countDocuments();
+    const activeProjects = await Project.countDocuments({ status: 'assigned' });
+    const completedProjects = await Project.countDocuments({ status: 'completed' });
+    
+    // Recent activity (mock or real if timestamp exists)
+    // Let's just return counts for now.
+
+    return NextResponse.json({
+      totalUsers,
+      totalProjects,
+      activeProjects,
+      completedProjects
+    });
+
+  } catch (error) {
+    console.error("Stats error:", error);
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+  }
+}
