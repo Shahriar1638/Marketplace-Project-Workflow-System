@@ -106,7 +106,7 @@ export default function AdminUsersPage() {
                                     </span>
                                 </td>
                                 <td className="py-3 px-4">
-                                    {user.requestStatus?.requestedRole === 'Buyer' ? (
+                                    {user.requestStatus?.requestedRole === 'Buyer' || user.requestStatus?.requestedRole === 'Problem Solver'? (
                                         <div className="flex flex-col gap-2">
                                             <span className="text-sm font-bold text-gray-700">
                                                 Requesting to become {user.requestStatus.requestedRole}

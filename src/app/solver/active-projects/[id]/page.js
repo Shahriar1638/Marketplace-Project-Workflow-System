@@ -14,6 +14,7 @@ export default function ActiveProjectWorkspace() {
     // State for creating new milestone
     const [newTitle, setNewTitle] = useState('');
     const [newDesc, setNewDesc] = useState('');
+    const [newDeadline, setNewDeadline] = useState('');
     const [creatingTask, setCreatingTask] = useState(false);
 
     // State for submitting a task
@@ -42,6 +43,26 @@ export default function ActiveProjectWorkspace() {
         if(id) fetchProject();
     }, [id]);
 
+    const handleDeleteTask = async (taskId) => {
+        if (!confirm("Are you sure you want to delete this milestone?")) return;
+        
+        try {
+            const res = await fetch(`/api/solver/projects/${id}/tasks/${taskId}`, {
+                method: 'DELETE',
+            });
+
+            if (res.ok) {
+                setMessage("Milestone deleted.");
+                fetchProject();
+            } else {
+                setMessage("Failed to delete milestone.");
+            }
+        } catch (error) {
+            console.error(error);
+            setMessage("Error deleting milestone.");
+        }
+    };
+
     const handleCreateTask = async (e) => {
         e.preventDefault();
         setCreatingTask(true);
@@ -53,7 +74,8 @@ export default function ActiveProjectWorkspace() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     title: newTitle, 
-                    description: newDesc 
+                    description: newDesc,
+                    deadline: newDeadline
                 }),
             });
 
@@ -61,6 +83,7 @@ export default function ActiveProjectWorkspace() {
                 setMessage("Milestone created!");
                 setNewTitle('');
                 setNewDesc('');
+                setNewDeadline('');
                 fetchProject();
             } else {
                 setMessage("Failed to create milestone.");
@@ -181,6 +204,16 @@ export default function ActiveProjectWorkspace() {
                                     onChange={e => setNewDesc(e.target.value)}
                                 />
                             </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Deadline</label>
+                                <input 
+                                    type="date"
+                                    required
+                                    className="w-full p-2 border border-gray-300 focus:border-black outline-none"
+                                    value={newDeadline}
+                                    onChange={e => setNewDeadline(e.target.value)}
+                                />
+                            </div>
                             <button 
                                 type="submit" 
                                 disabled={creatingTask}
@@ -202,14 +235,28 @@ export default function ActiveProjectWorkspace() {
                                     <div key={task._id} className="bg-white p-4 border border-gray-200 shadow-sm flex justify-between items-center">
                                         <div>
                                             <h4 className="font-bold">{task.title}</h4>
-                                            <p className="text-sm text-gray-600">{task.description}</p>
+                                            <p className="text-sm text-gray-600 line-clamp-2">{task.description}</p>
+                                            <p className="text-xs text-red-600 font-bold mt-1">Due: {task.deadline || 'No Deadline'}</p>
+                                            {task.status === 'rejected' && task.feedback && (
+                                                <p className="text-xs text-red-600 mt-2 p-2 bg-red-50 border border-red-200">
+                                                    <span className="font-bold">Feedback:</span> {task.feedback}
+                                                </p>
+                                            )}
                                         </div>
-                                        <button 
-                                            onClick={() => setSelectedTask(task)}
-                                            className="px-3 py-1 bg-blue-600 text-white text-sm font-bold hover:bg-blue-700"
-                                        >
-                                            Submit Work
-                                        </button>
+                                        <div className="flex gap-2">
+                                            <button 
+                                                onClick={() => handleDeleteTask(task._id)}
+                                                className="px-3 py-1 border border-red-500 text-red-600 text-sm font-bold hover:bg-red-50"
+                                            >
+                                                Delete
+                                            </button>
+                                            <button 
+                                                onClick={() => setSelectedTask(task)}
+                                                className="px-3 py-1 bg-black text-white text-sm font-bold hover:bg-gray-800"
+                                            >
+                                                Submit
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

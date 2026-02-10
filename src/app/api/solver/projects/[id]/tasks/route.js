@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/db";
 import Project from "@/models/Project";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../auth/[...nextauth]/route";
+import { authOptions } from "../../../../auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 
 export async function POST(req, { params }) {
@@ -10,7 +10,7 @@ export async function POST(req, { params }) {
     if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
-    const { title, description } = await req.json();
+    const { title, description, deadline } = await req.json();
 
     await dbConnect();
     
@@ -25,6 +25,7 @@ export async function POST(req, { params }) {
     project.tasks.push({
         title,
         description,
+        deadline,
         status: 'pending',
         submission: {} // Empty submission initially
     });

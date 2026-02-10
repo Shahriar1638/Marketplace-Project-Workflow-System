@@ -16,14 +16,20 @@ export default function AssignedProjectView({ project }) {
     const progress = Math.min(100, Math.round((completedTasks / estimatedModules) * 100)) || 0;
 
     const handleReview = async (taskId, action) => {
-        if (!confirm(`Are you sure you want to ${action} this submission?`)) return;
+        let feedback = '';
+        if (action === 'reject') {
+            feedback = prompt("Please provide a reason for rejection (required):");
+            if (!feedback) return; // Cancelled or empty
+        } else {
+            if (!confirm(`Are you sure you want to ${action} this submission?`)) return;
+        }
         
         setLoadingAction(true);
         try {
             const res = await fetch(`/api/buyer/projects/${project._id}/tasks/${taskId}/review`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action }), // 'approve' or 'reject'
+                body: JSON.stringify({ action, feedback }), 
             });
 
             if (res.ok) {

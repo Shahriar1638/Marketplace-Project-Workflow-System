@@ -38,6 +38,7 @@ const ProjectSchema = new mongoose.Schema({
   tasks: [{
     title: String,
     description: String,
+    deadline: String,
     status: {
       type: String,
       enum: ['pending', 'submitted', 'accepted', 'rejected'],
@@ -47,7 +48,8 @@ const ProjectSchema = new mongoose.Schema({
       zipUrl: String,
       submittedAt: String, // YYYY-MM-DD
       note: String
-    }
+    },
+    feedback: String
   }],
   status: {
     type: String,

@@ -2,131 +2,59 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function SolverDashboard() {
   const { data: session } = useSession();
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  
-  // Filters
-  const [techFilter, setTechFilter] = useState('');
-  const [sortOrder, setSortOrder] = useState('newest'); // 'newest', 'oldest'
+  const router = useRouter();
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const res = await fetch('/api/solver/projects');
-        if (res.ok) {
-          const data = await res.json();
-          setProjects(data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch projects", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProjects();
-  }, []);
-
-  const filteredProjects = projects
-    .filter(project => {
-        if (!techFilter) return true;
-        // Simple case-insensitive search in tech stack array or title/desc
-        const search = techFilter.toLowerCase();
-        const inStack = project.techStack?.some(tech => tech.toLowerCase().includes(search));
-        const inTitle = project.title.toLowerCase().includes(search);
-        return inStack || inTitle;
-    })
-    .sort((a, b) => {
-        const dateA = new Date(a.createdAt);
-        const dateB = new Date(b.createdAt);
-        return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
-    });
-
-  if (loading) return <div className="p-8 text-center">Loading opportunities...</div>;
+  if (!session) {
+    return <div className="p-8 text-center">Please log in.</div>;
+  }
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <div className="bg-black text-white p-12 text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome back, {session?.user?.name || 'Solver'}!</h1>
-        <p className="text-xl max-w-2xl mx-auto text-gray-300">
-          Ready to solve your next challenge? Explore open projects below and find the perfect match for your skills.
-        </p>
-      </div>
-
-      <div className="max-w-6xl mx-auto p-8">
+    <div className="min-h-screen p-8 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-8">Solver Dashboard</h1>
+      <p className="mb-8 text-gray-600">Welcome, {session.user.name}. What would you like to do today?</p>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         
-        {/* Filter & Sort Controls */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 bg-gray-50 p-4 border border-gray-200">
-            <div className="w-full md:w-1/2">
-                <label className="block text-sm font-bold mb-1">Filter by Tech Stack / Keyword</label>
-                <input 
-                    type="text" 
-                    placeholder="e.g. React, Python, API..."
-                    className="w-full border border-black p-2 focus:outline-none focus:ring-1 focus:ring-black"
-                    value={techFilter}
-                    onChange={(e) => setTechFilter(e.target.value)}
-                />
-            </div>
-            
-            <div className="w-full md:w-auto">
-                <label className="block text-sm font-bold mb-1">Sort By</label>
-                <select 
-                    className="border border-black p-2 w-full focus:outline-none focus:ring-1 focus:ring-black"
-                    value={sortOrder}
-                    onChange={(e) => setSortOrder(e.target.value)}
-                >
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                </select>
-            </div>
-        </div>
+        {/* Marketplace (All Projects) */}
+        <Link href="/solver/market" className="group block p-8 border border-black hover:bg-black hover:text-white transition h-64 flex flex-col justify-center items-center text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <h2 className="text-xl font-bold mb-2">Marketplace</h2>
+            <p className="text-sm text-gray-500 group-hover:text-gray-400">Browse all available projects</p>
+        </Link>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProjects.map((project) => (
-                <div key={project._id} className="border border-black p-6 bg-white hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow duration-200 flex flex-col h-full">
-                    <div className="mb-4">
-                        <span className="text-xs font-bold bg-gray-100 px-2 py-1 rounded text-gray-600 mb-2 inline-block">
-                             Posted {new Date(project.createdAt).toLocaleDateString()}
-                        </span>
-                        <h3 className="text-xl font-bold line-clamp-2" title={project.title}>{project.title}</h3>
-                        <p className="text-gray-600 mt-2 line-clamp-3 text-sm">{project.description}</p>
-                    </div>
+        {/* My Requests */}
+        <Link href="/solver/my-requests" className="group block p-8 border border-black hover:bg-black hover:text-white transition h-64 flex flex-col justify-center items-center text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 className="text-xl font-bold mb-2">My Requests</h2>
+            <p className="text-sm text-gray-500 group-hover:text-gray-400">Projects I have applied to</p>
+        </Link>
 
-                    {/* Tech Stack Tags */}
-                    {project.techStack && project.techStack.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-4">
-                            {project.techStack.slice(0, 3).map((tech, i) => (
-                                <span key={i} className="text-xs border border-gray-300 px-2 py-0.5 rounded-full text-gray-600">
-                                    {tech}
-                                </span>
-                            ))}
-                            {project.techStack.length > 3 && (
-                                <span className="text-xs text-gray-500 self-center">+{project.techStack.length - 3} more</span>
-                            )}
-                        </div>
-                    )}
+        {/* Assigned Projects */}
+        <Link href="/solver/active-projects" className="group block p-8 border border-black hover:bg-black hover:text-white transition h-64 flex flex-col justify-center items-center text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            <h2 className="text-xl font-bold mb-2">Assigned Projects</h2>
+            <p className="text-sm text-gray-500 group-hover:text-gray-400">Projects being worked on</p>
+        </Link>
+        
+        {/* Profile */}
+        <Link href="/solver/profile" className="group block p-8 border border-black hover:bg-black hover:text-white transition h-64 flex flex-col justify-center items-center text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <h2 className="text-xl font-bold mb-2">My Profile</h2>
+            <p className="text-sm text-gray-500 group-hover:text-gray-400">View and edit profile</p>
+        </Link>
 
-                    <div className="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
-                        <span className="font-bold text-lg">${project.budget}</span>
-                        {/* Placeholder for Apply logic (next step) */}
-                        <Link href={`/solver/projects/${project._id}`} className="bg-black text-white px-4 py-2 text-sm font-bold hover:bg-gray-800 transition">
-                            View Details
-                        </Link>
-                    </div>
-                </div>
-            ))}
-
-            {filteredProjects.length === 0 && (
-                <div className="col-span-full text-center py-16 border border-dashed border-gray-300">
-                    <p className="text-xl font-bold mb-2">No projects found.</p>
-                    <p className="text-gray-500">Try adjusting your filters or check back later.</p>
-                </div>
-            )}
-        </div>
       </div>
     </div>
   );

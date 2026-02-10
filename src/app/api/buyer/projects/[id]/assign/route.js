@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/db";
 import Project from "@/models/Project";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../auth/[...nextauth]/route"; // careful with relative path
+import { authOptions } from "../../../../auth/[...nextauth]/route"; // careful with relative path
 import { NextResponse } from "next/server";
 
 export async function PATCH(req, { params }) {

@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/db";
 import Project from "@/models/Project";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../../../auth/[...nextauth]/route";
+import { authOptions } from "../../../../../../auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 
 export async function PATCH(req, { params }) {
@@ -10,7 +10,7 @@ export async function PATCH(req, { params }) {
     if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { id, taskId } = await params;
-    const { action } = await req.json(); // 'approve' or 'reject'
+    const { action, feedback } = await req.json(); // 'approve' or 'reject'
 
     await dbConnect();
     
@@ -24,6 +24,10 @@ export async function PATCH(req, { params }) {
 
     const task = project.tasks.id(taskId);
     if (!task) return NextResponse.json({ message: "Task not found" }, { status: 404 });
+
+    if (feedback) {
+        task.feedback = feedback;
+    }
 
     if (action === 'approve') {
         task.status = 'accepted';
