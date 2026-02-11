@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
+ 
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from 'next/link';
@@ -141,7 +141,7 @@ export default function SolverProfilePage() {
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-zinc-50 p-4 rounded-xl border border-zinc-100">
-                                <label className="block text-xs font-bold text-zinc-500 mb-1.5 uppercase tracking-wide flex items-center gap-1.5">
+                                <label className="block text-xs font-bold text-zinc-500 mb-1.5 uppercase tracking-wide items-center gap-1.5">
                                     <User size={12} /> Full Name
                                 </label>
                                 <input 
@@ -151,7 +151,7 @@ export default function SolverProfilePage() {
                                 />
                             </div>
                             <div className="bg-zinc-50 p-4 rounded-xl border border-zinc-100">
-                                <label className="block text-xs font-bold text-zinc-500 mb-1.5 uppercase tracking-wide flex items-center gap-1.5">
+                                <label className="text-xs font-bold text-zinc-500 mb-1.5 uppercase tracking-wide flex items-center gap-1.5">
                                     <Mail size={12} /> Email Address
                                 </label>
                                 <input 
@@ -164,7 +164,7 @@ export default function SolverProfilePage() {
 
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-bold text-zinc-700 mb-2 flex items-center gap-2">
+                                <label className="block text-sm font-bold text-zinc-700 mb-2 items-center gap-2">
                                     Professional Bio
                                     <span className="text-xs font-normal text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded-full">Required</span>
                                 </label>
@@ -179,7 +179,7 @@ export default function SolverProfilePage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-zinc-700 mb-2 flex items-center gap-2">
+                                <label className="text-sm font-bold text-zinc-700 mb-2 flex items-center gap-2">
                                     <Code size={16} className="text-emerald-600"/>
                                     Skills & Technologies
                                 </label>
@@ -197,7 +197,7 @@ export default function SolverProfilePage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                                 <div>
-                                    <label className="block text-sm font-bold text-zinc-700 mb-2 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-zinc-700 mb-2 items-center gap-2">
                                         <Github size={16} className="text-zinc-800"/>
                                         GitHub Profile
                                     </label>
@@ -210,7 +210,7 @@ export default function SolverProfilePage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-zinc-700 mb-2 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-zinc-700 mb-2 items-center gap-2">
                                         <Phone size={16} className="text-blue-600"/>
                                         Phone Number
                                     </label>
