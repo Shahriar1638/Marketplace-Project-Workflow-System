@@ -94,7 +94,3 @@ Live Link : https://marketplace-project-workflow-system.vercel.app/
 3. **Hybrid Verification**:
    - Frontend handling for immediate feedback (toast notifications).
    - Backend API validation ensures unauthorized users cannot modify project states (e.g. only the assigned Buyer can approve a task).
-
----
-
-Based on the [Project Details](./Project_details.md) requirements.
