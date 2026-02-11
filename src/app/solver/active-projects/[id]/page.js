@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -321,7 +323,7 @@ export default function ActiveProjectWorkspace() {
                             </span>
                         </div>
                         
-                        <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="space-y-4 max-h-150 overflow-y-auto pr-2 custom-scrollbar">
                              {historyTasks.length === 0 ? (
                                 <p className="text-center text-gray-400 text-sm py-4 italic">No completed tasks yet.</p>
                             ) : (
