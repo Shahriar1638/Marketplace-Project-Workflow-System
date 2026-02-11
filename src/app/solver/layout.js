@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { Compass, FolderMinus, FolderCheck, User, LogOut, Home } from 'lucide-react';
+import Image from 'next/image';
 import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
 
@@ -27,7 +28,9 @@ export default function SolverLayout({ children }) {
                 {/* Logo Area */}
                 <div className="flex items-center gap-2">
                     <Link href="/solver" className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-emerald-600 text-white rounded flex items-center justify-center font-bold text-lg shadow-md">F</div>
+                        <div className="w-8 h-8 relative flex items-center justify-center">
+                            <Image src="/logo.png" alt="FlowDesk" fill className="object-contain" />
+                        </div>
                         <span className="font-bold text-xl tracking-tight text-gray-900">FlowDesk</span>
                     </Link>
                     <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded ml-2 uppercase tracking-wider border border-emerald-100">Solver</span>

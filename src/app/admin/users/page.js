@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Search, CheckCircle, XCircle, Shield, User } from 'lucide-react';
 import { clsx } from "clsx";
+import Swal from 'sweetalert2';
 
 export default function AdminUsersPage() {
     const [users, setUsers] = useState([]);
@@ -29,7 +30,18 @@ export default function AdminUsersPage() {
     }, []);
 
     const handleRoleUpdate = async (userId, newRole, action) => {
-        if (!confirm(`Are you sure you want to ${action} this request?`)) return;
+        const result = await Swal.fire({
+            title: `Confirm ${action}?`,
+            text: `Are you sure you want to ${action} this request?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: action === 'approve' ? '#10b981' : '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: `Yes, ${action} it!`
+        });
+
+        if (!result.isConfirmed) return;
+
         try {
             const res = await fetch('/api/admin/users/update-role', {
                 method: 'PATCH',
@@ -37,10 +49,20 @@ export default function AdminUsersPage() {
                 body: JSON.stringify({ userId, role: newRole, action }),
             });
             if (res.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    text: `User request has been ${action}d.`,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 fetchUsers(); // Refresh list
+            } else {
+                Swal.fire('Error', 'Failed to update role.', 'error');
             }
         } catch (error) {
             console.error("Failed to update role", error);
+            Swal.fire('Error', 'An error occurred.', 'error');
         }
     };
 

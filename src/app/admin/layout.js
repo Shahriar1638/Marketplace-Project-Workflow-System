@@ -2,13 +2,16 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
-import { LayoutDashboard, Users, FolderOpen, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, FolderOpen, LogOut, Menu, X } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import PageTransition from '@/components/PageTransition';
+import { useState } from 'react';
+import Image from 'next/image';
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navItems = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -17,11 +20,34 @@ export default function AdminLayout({ children }) {
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900 font-sans">
+    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden">
+      
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 w-full bg-zinc-900 text-white z-50 p-4 flex justify-between items-center shadow-lg">
+        <div className="flex items-center gap-2">
+            <div className="w-8 h-8 relative flex items-center justify-center">
+                <Image src="/logo.png" alt="FlowDesk" fill className="object-contain" />
+            </div>
+            <h1 className="text-xl font-black tracking-tight">
+              <span className="text-indigo-500">Flow</span><span className="text-white">Desk</span>
+            </h1>
+        </div>
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-zinc-800 rounded transition">
+            {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
       {/* Sidebar */}
-      <aside className="fixed inset-y-0 left-0 w-64 bg-zinc-900 text-white p-6 shadow-xl z-50 flex flex-col justify-between transition-transform duration-300 transform md:translate-x-0 -translate-x-full md:relative">
+      <aside className={clsx(
+        "fixed inset-y-0 left-0 bg-zinc-900 text-white p-6 shadow-xl z-40 w-64 flex flex-col justify-between transition-transform duration-300 md:relative md:translate-x-0 pt-20 md:pt-6",
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
         <div>
-          <div className="mb-10 flex items-center gap-3 px-2">
+          {/* Logo - Hidden on mobile as it's in header */}
+          <div className="hidden md:flex mb-10 items-center gap-3 px-2">
+            <div className="w-8 h-8 relative flex items-center justify-center">
+                <Image src="/logo.png" alt="FlowDesk" fill className="object-contain" />
+            </div>
             <h1 className="text-2xl font-black tracking-tight">
               <span className="text-indigo-500">Flow</span><span className="text-white">Desk</span>
             </h1>
@@ -38,8 +64,9 @@ export default function AdminLayout({ children }) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={() => setIsSidebarOpen(false)}
                   className={twMerge(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group relative overflow-hidden",
+                    "group flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 relative overflow-hidden",
                     isActive 
                       ? "bg-indigo-600 text-white font-medium shadow-md shadow-indigo-900/20" 
                       : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
@@ -70,9 +97,17 @@ export default function AdminLayout({ children }) {
         </div>
       </aside>
 
+      {/* Overlay background for mobile when sidebar is open */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-30 md:hidden backdrop-blur-sm"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Main Content */}
-      <main className="flex-1 overflow-x-hidden md:ml-0 transition-all duration-300">
-        <div className="p-8 max-w-7xl mx-auto">
+      <main className="flex-1 overflow-auto md:ml-0 transition-all duration-300 pt-16 md:pt-0 bg-slate-50 w-full">
+        <div className="p-4 md:p-8 max-w-7xl mx-auto">
             <PageTransition>
                 {children}
             </PageTransition>

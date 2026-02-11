@@ -2,6 +2,7 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Loader2, ArrowRight, UserPlus } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -41,13 +42,15 @@ export default function Home() {
     <div className="min-h-screen flex flex-col md:flex-row bg-white overflow-hidden">
       
       {/* Left Side: Branding / Marketing */}
-      <div className="md:w-1/2 bg-zinc-900 text-white p-12 flex flex-col justify-between relative overflow-hidden">
+      <div className="hidden md:flex md:w-1/2 bg-zinc-900 text-white p-12 flex-col justify-between relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10 pointer-events-none"></div>
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2"></div>
         
         <div className="relative z-10">
-            <div className="w-12 h-12 bg-white text-black rounded-xl flex items-center justify-center font-bold text-2xl shadow-xl mb-8">F</div>
+            <div className="flex items-center justify-center mb-8">
+                 <Image src="/logo.png" alt="FlowDesk" width={80} height={80} className="object-contain" priority />
+            </div>
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
               Build.<br/>
               Collaborate.<br/>
@@ -104,7 +107,6 @@ export default function Home() {
                 <div>
                     <div className="flex justify-between items-center mb-1.5">
                         <label className="block text-sm font-bold text-zinc-700">Password</label>
-                        <a href="#" className="text-xs font-bold text-zinc-400 hover:text-zinc-600">Forgot password?</a>
                     </div>
                     <input
                         type="password"

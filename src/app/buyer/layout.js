@@ -5,6 +5,7 @@ import { signOut } from 'next-auth/react';
 import { Home, Compass, FolderPlus, List, LogOut } from 'lucide-react';
 import { clsx } from 'clsx';
 import PageTransition from '@/components/PageTransition';
+import Image from 'next/image';
 
 export default function BuyerLayout({ children }) {
   const pathname = usePathname();
@@ -25,6 +26,9 @@ export default function BuyerLayout({ children }) {
                 
                 {/* Logo Area */}
                 <div className="flex items-center gap-1">
+                    <div className="w-8 h-8 relative flex items-center justify-center mr-1">
+                        <Image src="/logo.png" alt="FlowDesk" fill className="object-contain" />
+                    </div>
                     <h1 className="text-2xl font-black tracking-tight">
                         <span className="text-blue-600">Flow</span><span className="text-black">Desk</span>
                     </h1>

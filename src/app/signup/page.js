@@ -2,6 +2,7 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Loader2, ArrowRight, UserPlus, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -62,8 +63,8 @@ export default function SignupPage() {
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2"></div>
         
         <div className="relative z-10 p-6">
-            <Link href="/" className="inline-block">
-                <div className="w-12 h-12 bg-white text-black rounded-xl flex items-center justify-center font-bold text-2xl shadow-xl mb-8">F</div>
+            <Link href="/" className="relative w-20 h-20 bg-white rounded-2xl flex items-center justify-center p-2 shadow-xl mb-8">
+                <Image src="/logo.png" alt="FlowDesk" fill className="object-contain p-2" priority />
             </Link>
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
               Join the<br/>

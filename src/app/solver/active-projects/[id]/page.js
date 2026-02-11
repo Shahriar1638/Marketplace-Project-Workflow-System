@@ -7,6 +7,7 @@ import { uploadFile } from "@/lib/appwrite";
 import Link from 'next/link';
 import { ArrowLeft, Clock, Save, Trash2, Send, FileText, CheckCircle, AlertCircle, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Swal from 'sweetalert2';
 
 export default function ActiveProjectWorkspace() {
     const { id } = useParams();
@@ -26,8 +27,6 @@ export default function ActiveProjectWorkspace() {
     const [file, setFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     
-    const [message, setMessage] = useState('');
-
     // Fetch Project Function
     const fetchProject = async () => {
         try {
@@ -49,24 +48,34 @@ export default function ActiveProjectWorkspace() {
 
     // Handlers
     const handleDeleteTask = async (taskId) => {
-        if (!confirm("Are you sure you want to delete this milestone?")) return;
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you really want to delete this milestone?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (!result.isConfirmed) return;
+
         try {
             const res = await fetch(`/api/solver/projects/${id}/tasks/${taskId}`, { method: 'DELETE' });
             if (res.ok) {
-                setMessage("Milestone deleted.");
+                Swal.fire('Deleted!', 'Milestone deleted.', 'success');
                 fetchProject();
             } else {
-                setMessage("Failed to delete milestone.");
+                Swal.fire('Error', 'Failed to delete milestone.', 'error');
             }
         } catch (error) {
-            setMessage("Error deleting milestone.");
+            Swal.fire('Error', 'Error deleting milestone.', 'error');
         }
     };
 
     const handleCreateTask = async (e) => {
         e.preventDefault();
         setCreatingTask(true);
-        setMessage('');
 
         try {
             const res = await fetch(`/api/solver/projects/${id}/tasks`, {
@@ -80,16 +89,22 @@ export default function ActiveProjectWorkspace() {
             });
 
             if (res.ok) {
-                setMessage("Milestone created successfully!");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Milestone Created',
+                    text: 'New milestone added to your plan.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 setNewTitle('');
                 setNewDesc('');
                 setNewDeadline('');
                 fetchProject();
             } else {
-                setMessage("Failed to create milestone.");
+                Swal.fire('Error', 'Failed to create milestone.', 'error');
             }
         } catch (error) {
-            setMessage("Error creating milestone.");
+            Swal.fire('Error', 'Error creating milestone.', 'error');
         } finally {
             setCreatingTask(false);
         }
@@ -101,7 +116,11 @@ export default function ActiveProjectWorkspace() {
             const validTypes = ['application/zip', 'application/x-zip-compressed', 'application/x-compressed', 'multipart/x-zip'];
             const isZip = validTypes.includes(selectedFile.type) || selectedFile.name.endsWith('.zip');
             if (!isZip) {
-                alert("Only ZIP files are allowed.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid File Type',
+                    text: 'Only ZIP files are allowed.'
+                });
                 e.target.value = null;
                 setFile(null);
                 return;
@@ -113,19 +132,22 @@ export default function ActiveProjectWorkspace() {
     const handleSubmitTask = async (e) => {
         e.preventDefault();
         if (!selectedTask) return;
+        
+        if (!file) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No File Selected',
+                text: 'Please upload a ZIP file to submit.'
+            });
+            return;
+        }
+
         setUploading(true);
-        setMessage('');
 
         try {
             let zipUrl = '';
-            if (file) {
-                const uploadedUrl = await uploadFile(file);
-                zipUrl = uploadedUrl.toString();
-            } else {
-                alert("Please select a file.");
-                setUploading(false);
-                return;
-            }
+            const uploadedUrl = await uploadFile(file);
+            zipUrl = uploadedUrl.toString();
 
             const res = await fetch(`/api/solver/projects/${id}/tasks/${selectedTask._id}/submit`, {
                 method: 'POST',
@@ -134,16 +156,22 @@ export default function ActiveProjectWorkspace() {
             });
 
             if (res.ok) {
-                setMessage("Task submitted successfully!");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Submitted!',
+                    text: 'Task submitted successfully.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 setSelectedTask(null); // Close modal
                 setSubmissionNote('');
                 setFile(null);
                 fetchProject();
             } else {
-                setMessage("Failed to submit task.");
+                Swal.fire('Error', 'Failed to submit task.', 'error');
             }
         } catch (error) {
-            setMessage("Error during submission: " + error.message);
+            Swal.fire('Error', 'Error during submission: ' + error.message, 'error');
         } finally {
             setUploading(false);
         }
@@ -179,16 +207,6 @@ export default function ActiveProjectWorkspace() {
                     <span>Project Due: {project.assignmentDetails?.estimatedDeadlineForEntireProject || 'No Date'}</span>
                 </div>
             </div>
-
-            {message && (
-                <motion.div 
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`p-4 rounded-lg text-center font-bold text-sm ${message.includes('successfully') || message.includes('created') || message.includes('deleted') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}
-                >
-                    {message}
-                </motion.div>
-            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
+import Swal from 'sweetalert2';
 
 export default function AssignedProjectView({ project }) {
     const [loadingAction, setLoadingAction] = useState(false);
@@ -17,11 +18,39 @@ export default function AssignedProjectView({ project }) {
 
     const handleReview = async (taskId, action) => {
         let feedback = '';
+        
         if (action === 'reject') {
-            feedback = prompt("Please provide a reason for rejection (required):");
-            if (!feedback) return; // Cancelled or empty
+            const { value: text } = await Swal.fire({
+                title: 'Reject Submission',
+                input: 'textarea',
+                inputLabel: 'Reason for rejection',
+                inputPlaceholder: 'Please provide a feedback or reason...',
+                inputValidator: (value) => {
+                    if (!value) {
+                    return 'You need to write something!'
+                    }
+                },
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Reject'
+            });
+
+            if (!text) return; // Cancelled
+            feedback = text;
         } else {
-            if (!confirm(`Are you sure you want to ${action} this submission?`)) return;
+            // Confirm Approve
+            const result = await Swal.fire({
+                title: 'Approve Submission?',
+                text: "This task will be marked as complete.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981', // green
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Approve!'
+            });
+
+            if (!result.isConfirmed) return;
         }
         
         setLoadingAction(true);
@@ -33,14 +62,26 @@ export default function AssignedProjectView({ project }) {
             });
 
             if (res.ok) {
-                alert(`Task ${action}d successfully!`);
+                await Swal.fire(
+                    action === 'approve' ? 'Approved!' : 'Rejected!',
+                    `Task has been ${action === 'approve' ? 'approved' : 'rejected'}.`,
+                    'success'
+                );
                 window.location.reload();
             } else {
-                alert('Failed to update task status.');
+                Swal.fire(
+                    'Error',
+                    'Failed to update task status.',
+                    'error'
+                );
             }
         } catch (error) {
             console.error(error);
-            alert('An error occurred.');
+            Swal.fire(
+                'Error',
+                'An error occurred.',
+                'error'
+            );
         } finally {
             setLoadingAction(false);
         }

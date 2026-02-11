@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
 
 export default function UnassignedProjectView({ project }) {
     const router = useRouter();
@@ -9,7 +10,17 @@ export default function UnassignedProjectView({ project }) {
     const [loadingAction, setLoadingAction] = useState(false);
 
     const handleAccept = async (request) => {
-        if (!confirm(`Are you sure you want to hire ${request.solverId?.name}?`)) return;
+        const result = await Swal.fire({
+            title: `Hire ${request.solverId?.name}?`,
+            text: "This will assign the project to this solver.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#000',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Hire!'
+        });
+
+        if (!result.isConfirmed) return;
         
         setLoadingAction(true);
         try {
@@ -24,14 +35,26 @@ export default function UnassignedProjectView({ project }) {
             });
 
             if (res.ok) {
-                alert('Project assigned successfully!');
+                await Swal.fire(
+                    'Assigned!',
+                    'Project assigned successfully!',
+                    'success'
+                );
                 window.location.reload(); // Reload to switch to Assigned View
             } else {
-                alert('Failed to assign project.');
+                Swal.fire(
+                    'Error',
+                    'Failed to assign project.',
+                    'error'
+                );
             }
         } catch (error) {
             console.error(error);
-            alert('An error occurred.');
+            Swal.fire(
+                'Error',
+                'An error occurred.',
+                'error'
+            );
         } finally {
             setLoadingAction(false);
         }

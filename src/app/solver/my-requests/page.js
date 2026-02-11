@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Calendar, User, Clock, FileText, CheckCircle, AlertTriangle, X } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export default function MyRequests() {
   const { data: session } = useSession();
@@ -56,109 +59,163 @@ export default function MyRequests() {
           });
 
           if (res.ok) {
-              setMessage("Success: Application updated.");
+              Swal.fire({
+                  title: 'Updated!',
+                  text: 'Your proposal has been successfully updated.',
+                  icon: 'success',
+                  timer: 2000,
+                  showConfirmButton: false
+              });
               fetchRequests(); // Refresh data
               setEditingRequest(null); // Close modal
           } else {
               const err = await res.json();
-              setMessage("Error: " + err.message);
+              Swal.fire('Error', err.message, 'error');
           }
       } catch (error) {
           console.error(error);
-          setMessage("Error: Failed to update.");
+          Swal.fire('Error', 'Failed to update proposal.', 'error');
       } finally {
           setSaveLoading(false);
       }
   };
 
 
-  if (loading) return <div className="p-8 text-center">Loading requests...</div>;
+  if (loading) return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+          <div className="animate-spin text-emerald-600 rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+      </div>
+  );
 
   return (
-    <div className="min-h-screen">
-      <div className="bg-black text-white p-12 text-center">
-        <h1 className="text-4xl font-bold mb-4">My Requests</h1>
-        <p className="text-xl max-w-2xl mx-auto text-gray-300">
-          Track and manage your applications.
-        </p>
+    <div className="min-h-screen bg-gray-50 pb-12">
+      {/* Hero Header */}
+      <div className="relative bg-zinc-900 overflow-hidden mb-12 py-16 px-4 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10 pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+        <div className="max-w-7xl mx-auto relative z-10 text-center">
+            <h1 className="text-4xl font-extrabold text-white sm:text-5xl md:text-6xl tracking-tight">
+                My <span className="text-emerald-500">Applications</span>
+            </h1>
+            <p className="mt-4 max-w-2xl mx-auto text-xl text-zinc-400">
+                Track status updates and manage your active proposals.
+            </p>
+        </div>
       </div>
 
-      <div className="max-w-6xl mx-auto p-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {message && (
-             <div className={`p-4 mb-6 border text-center font-bold sticky top-4 z-10 ${message.includes('Success') ? 'bg-green-100 border-green-500 text-green-800' : 'bg-red-100 border-red-500 text-red-800'}`}>
+             <div className={`p-4 mb-6 rounded-lg text-center font-bold sticky top-4 z-10 shadow-lg animate-fade-in-down ${message.includes('Success') ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
                 {message}
             </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => {
-                // Find the specific request for this user
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <AnimatePresence>
+            {projects.map((project, index) => {
                 const myRequest = project.requests.find(r => r.solverId === session?.user?.id);
                 const status = myRequest ? myRequest.status : 'Unknown';
                 const requestsCount = project.requests ? project.requests.length : 0;
-                
-                // Allow edit if project is NOT assigned to someone else
-                // If project.status is 'open', it's editable. If 'assigned' and assignedSolverId !== me, not editable.
-                // Assuming efficient way: if project.status === 'assigned' && project.assignedSolverId !== session.user.id -> blocked.
                 const isAssignedToOther = project.status === 'assigned' && project.assignedSolverId !== session.user.id;
                 const canEdit = !isAssignedToOther && status !== 'accepted'; 
 
                 return (
-                    <div key={project._id} className="border border-black p-6 bg-white hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow duration-200 flex flex-col h-full relative">
-                        {/* Status Badge */}
-                        <div className="absolute top-4 right-4">
-                             <span className={`text-xs font-bold px-2 py-1 rounded uppercase tracking-wider
-                                    ${status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                      status === 'accepted' ? 'bg-green-100 text-green-800' : 
-                                      'bg-red-100 text-red-800'}`}>
-                                     {status}
-                            </span>
-                        </div>
+                    <motion.div 
+                        key={project._id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="group bg-white rounded-2xl shadow-sm border border-zinc-200 hover:border-emerald-500 hover:shadow-xl transition-all duration-300 flex flex-col h-full relative overflow-hidden"
+                    >
+                        {/* Status Strip */}
+                        <div className={`h-1.5 w-full absolute top-0 left-0 
+                            ${status === 'pending' ? 'bg-amber-400' : 
+                              status === 'accepted' ? 'bg-emerald-500' : 
+                              'bg-red-500'}`} 
+                        />
 
-                        <div className="mb-4 pr-16">
-                            <h3 className="text-xl font-bold line-clamp-2 mb-2" title={project.title}>{project.title}</h3>
-                            <p className="text-xs text-gray-400 mb-4">Posted: {new Date(project.createdAt).toLocaleDateString()}</p>
+                        <div className="p-6 flex-1 flex flex-col">
+                            <div className="flex justify-between items-start mb-4">
+                                <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5
+                                        ${status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-100' : 
+                                          status === 'accepted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 
+                                          'bg-red-50 text-red-700 border border-red-100'}`}>
+                                         {status === 'pending' && <Clock size={12} />}
+                                         {status === 'accepted' && <CheckCircle size={12} />}
+                                         {status === 'rejected' && <X size={12} />}
+                                         {status}
+                                </span>
+                                <span className="text-xs text-zinc-400 font-medium flex items-center gap-1">
+                                    <Calendar size={12} />
+                                    {new Date(project.createdAt).toLocaleDateString()}
+                                </span>
+                            </div>
+
+                            <h3 className="text-xl font-bold text-zinc-900 line-clamp-2 mb-3 group-hover:text-emerald-700 transition-colors" title={project.title}>
+                                {project.title}
+                            </h3>
                             
-                            <div className="text-sm bg-gray-50 p-3 border border-gray-100 mb-4">
-                                <p className="font-bold text-gray-700 mb-1">My Proposal:</p>
-                                <p className="text-gray-600 line-clamp-3 mb-2 italic">"{myRequest?.description}"</p>
-                                <div className="flex justify-between text-xs text-gray-500 font-bold">
-                                    <span>Est. Modules: {myRequest?.estimatedModules}</span>
-                                    <span>Deadline: {myRequest?.deadline}</span>
+                            <div className="bg-zinc-50 border border-zinc-100 rounded-xl p-4 mb-4">
+                                <div className="flex items-center gap-2 mb-2 text-zinc-800 font-bold text-sm">
+                                    <FileText size={14} className="text-emerald-500" />
+                                    Your Proposal
+                                </div>
+                                <p className="text-zinc-600 text-sm italic line-clamp-3 mb-3 leading-relaxed">
+                                    "{myRequest?.description}"
+                                </p>
+                                <div className="flex items-center justify-between text-xs font-bold text-zinc-500 pt-3 border-t border-zinc-200">
+                                    <div className="flex items-center gap-1">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                                        {myRequest?.estimatedModules} Modules
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                                        Due {myRequest?.deadline}
+                                    </div>
                                 </div>
                             </div>
 
-                            <p className="text-gray-600 text-sm line-clamp-3">{project.description}</p>
+                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-zinc-100">
+                                <div className="flex items-center gap-1 text-xs font-bold text-zinc-500">
+                                    <User size={14} />
+                                    {requestsCount} Applicant{requestsCount !== 1 ? 's' : ''}
+                                </div>
+                                
+                                {canEdit && (
+                                    <button 
+                                        onClick={() => handleEditClick(project, myRequest)}
+                                        className="text-xs font-bold bg-black text-white px-3 py-1.5 rounded-lg hover:bg-zinc-800 transition-colors flex items-center gap-1 shadow-sm hover:shadow-md"
+                                    >
+                                        Edit
+                                    </button>
+                                )}
+                                
+                                {!canEdit && isAssignedToOther && (
+                                    <span className="text-red-500 text-xs font-bold bg-red-50 px-2 py-1 rounded border border-red-100 flex items-center gap-1">
+                                        <AlertTriangle size={12} /> Closed
+                                    </span>
+                                )}
+                            </div>
                         </div>
-
-                        <div className="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center text-sm">
-                            <span className="text-gray-500 font-bold">{requestsCount} Applicants</span>
-                            
-                            {canEdit && (
-                                <button 
-                                    onClick={() => handleEditClick(project, myRequest)}
-                                    className="text-black underline font-bold hover:text-blue-600 transition"
-                                >
-                                    Edit Proposal
-                                </button>
-                            )}
-                            
-                            {!canEdit && isAssignedToOther && (
-                                <span className="text-red-500 text-xs font-bold">Closed (Assigned)</span>
-                            )}
-                        </div>
-                    </div>
+                    </motion.div>
                 );
             })}
+            </AnimatePresence>
 
             {projects.length === 0 && (
-                <div className="col-span-full text-center py-16 border border-dashed border-gray-300">
-                    <p className="text-xl font-bold mb-2">No requests found.</p>
-                    <p className="text-gray-500">
-                        You haven't applied to any projects yet. 
-                        <Link href="/solver/market" className="text-black underline ml-1 font-bold">Browse Market</Link>
+                <div className="col-span-full text-center py-20 bg-white rounded-3xl border border-dashed border-zinc-300 shadow-sm">
+                    <div className="w-16 h-16 bg-zinc-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FileText className="text-zinc-400" size={32} />
+                    </div>
+                    <p className="text-xl font-bold text-zinc-900 mb-2">No applications yet</p>
+                    <p className="text-zinc-500 max-w-sm mx-auto mb-6">
+                        You haven't submitted any proposals. Browse the marketplace to find your next project.
                     </p>
+                    <Link href="/solver/market" className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-black hover:bg-zinc-800 transition shadow-lg">
+                        Browse Market
+                    </Link>
                 </div>
             )}
         </div>
@@ -166,71 +223,84 @@ export default function MyRequests() {
 
        {/* Edit Modal */}
        {editingRequest && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                <div className="bg-white p-8 max-w-lg w-full border border-black shadow-2xl relative">
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl relative border border-zinc-100"
+                >
                     <button 
                         onClick={() => setEditingRequest(null)}
-                        className="absolute top-4 right-4 text-gray-500 hover:text-black font-bold text-xl"
+                        className="absolute top-6 right-6 text-zinc-400 hover:text-black transition-colors"
                     >
-                        ✕
+                        <X size={24} />
                     </button>
                     
-                    <h2 className="text-2xl font-bold mb-6">Edit Proposal</h2>
+                    <div className="mb-6">
+                        <h2 className="text-2xl font-extrabold text-zinc-900">Edit Proposal</h2>
+                        <p className="text-zinc-500 text-sm mt-1">Update your application details below.</p>
+                    </div>
                     
-                    <form onSubmit={handleSaveEdit} className="space-y-4">
+                    <form onSubmit={handleSaveEdit} className="space-y-5">
                         <div>
-                            <label className="block text-sm font-bold mb-1">Proposal / Cover Letter</label>
+                            <label className="block text-xs font-bold text-zinc-700 mb-1.5 uppercase tracking-wide">Cover Letter</label>
                             <textarea 
                                 required
                                 rows="4"
-                                className="w-full p-2 border border-black focus:outline-none focus:ring-1 focus:ring-black"
+                                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all font-medium text-sm resize-none"
                                 value={editingRequest.description}
                                 onChange={e => setEditingRequest({...editingRequest, description: e.target.value})}
+                                placeholder="Describe why you are the best fit..."
                             />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-bold mb-1">Est. Modules</label>
-                                <input 
-                                    type="number"
-                                    required
-                                    min="1"
-                                    className="w-full p-2 border border-black focus:outline-none focus:ring-1 focus:ring-black"
-                                    value={editingRequest.estimatedModules}
-                                    onChange={e => setEditingRequest({...editingRequest, estimatedModules: e.target.value})}
-                                />
+                                <label className="block text-xs font-bold text-zinc-700 mb-1.5 uppercase tracking-wide">Est. Modules</label>
+                                <div className="relative">
+                                    <input 
+                                        type="number"
+                                        required
+                                        min="1"
+                                        className="w-full pl-10 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all font-bold text-sm"
+                                        value={editingRequest.estimatedModules}
+                                        onChange={e => setEditingRequest({...editingRequest, estimatedModules: e.target.value})}
+                                    />
+                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400">
+                                        <FileText size={16} />
+                                    </div>
+                                </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-bold mb-1">Est. Deadline</label>
+                                <label className="block text-xs font-bold text-zinc-700 mb-1.5 uppercase tracking-wide">Deadline</label>
                                 <input 
                                     type="date"
                                     required
-                                    className="w-full p-2 border border-black focus:outline-none focus:ring-1 focus:ring-black"
+                                    className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all font-bold text-sm text-zinc-600"
                                     value={editingRequest.deadline}
                                     onChange={e => setEditingRequest({...editingRequest, deadline: e.target.value})}
                                 />
                             </div>
                         </div>
                         
-                        <div className="pt-4 flex justify-end gap-4">
+                        <div className="pt-6 flex justify-end gap-3 border-t border-zinc-100 mt-6">
                             <button 
                                 type="button"
                                 onClick={() => setEditingRequest(null)}
-                                className="px-4 py-2 text-gray-500 font-bold hover:text-black"
+                                className="px-5 py-2.5 text-zinc-600 font-bold hover:bg-zinc-50 rounded-xl transition-colors text-sm"
                             >
                                 Cancel
                             </button>
                             <button 
                                 type="submit" 
                                 disabled={saveLoading}
-                                className="px-6 py-2 bg-black text-white font-bold hover:bg-gray-800 disabled:opacity-50"
+                                className="px-6 py-2.5 bg-black text-white font-bold rounded-xl hover:bg-zinc-800 transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:transform-none transform active:scale-95 text-sm"
                             >
                                 {saveLoading ? 'Saving...' : 'Save Changes'}
                             </button>
                         </div>
                     </form>
-                </div>
+                </motion.div>
             </div>
         )}
 
