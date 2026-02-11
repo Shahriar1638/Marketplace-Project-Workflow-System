@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { Home, Compass, FolderPlus, List, LogOut } from 'lucide-react';
 import { clsx } from 'clsx';
+import PageTransition from '@/components/PageTransition';
 
 export default function BuyerLayout({ children }) {
   const pathname = usePathname();
@@ -23,10 +24,13 @@ export default function BuyerLayout({ children }) {
             <div className="flex justify-between items-center h-16">
                 
                 {/* Logo Area */}
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-black text-white rounded flex items-center justify-center font-bold text-lg">F</div>
-                    <span className="font-bold text-xl tracking-tight">FlowDesk</span>
-                    <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded ml-2 uppercase tracking-wider">Buyer</span>
+                <div className="flex items-center gap-1">
+                    <h1 className="text-2xl font-black tracking-tight">
+                        <span className="text-blue-600">Flow</span><span className="text-black">Desk</span>
+                    </h1>
+                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded ml-2 border border-blue-100 uppercase tracking-widest self-center">
+                        Buyer
+                    </span>
                 </div>
 
                 {/* Desktop Navigation */}
@@ -58,7 +62,7 @@ export default function BuyerLayout({ children }) {
                      {/* ... (simplified for now) ... */}
 
                      <button 
-                        onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+                        onClick={() => signOut({ callbackUrl: '/' })}
                         className="text-gray-500 hover:text-red-600 transition-colors p-2 rounded-full hover:bg-red-50"
                         title="Sign Out"
                      >
@@ -71,7 +75,9 @@ export default function BuyerLayout({ children }) {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {children}
+        <PageTransition>
+            {children}
+        </PageTransition>
       </main>
     </div>
   );

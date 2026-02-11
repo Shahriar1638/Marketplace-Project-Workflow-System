@@ -109,7 +109,7 @@ export default function AdminUsersPage() {
                                     <tr key={user._id} className="hover:bg-zinc-50 transition-colors">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
-                                                <div className="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold">
+                                                <div className="shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold">
                                                     {user.name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div className="ml-4">
@@ -136,7 +136,7 @@ export default function AdminUsersPage() {
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             {/* Role Request Actions */}
                                             {user.requestStatus?.status === 'pending' ? (
-                                                 <div className="flex items-center justify-end gap-2 bg-amber-50 p-2 rounded-lg border border-amber-200 inline-block">
+                                                 <div className="flex items-center justify-end gap-2 bg-amber-50 p-2 rounded-lg border border-amber-200">
                                                     <span className="text-xs text-amber-800 font-bold mr-2">
                                                         Requested: {user.requestStatus.requestedRole}
                                                     </span>

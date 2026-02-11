@@ -5,6 +5,7 @@ import { signOut } from 'next-auth/react';
 import { LayoutDashboard, Users, FolderOpen, LogOut } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import PageTransition from '@/components/PageTransition';
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
@@ -20,9 +21,13 @@ export default function AdminLayout({ children }) {
       {/* Sidebar */}
       <aside className="fixed inset-y-0 left-0 w-64 bg-zinc-900 text-white p-6 shadow-xl z-50 flex flex-col justify-between transition-transform duration-300 transform md:translate-x-0 -translate-x-full md:relative">
         <div>
-          <div className="mb-10 flex items-center gap-2">
-            <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center font-bold text-xl">F</div>
-            <h1 className="text-2xl font-bold tracking-tight">FlowDesk Admin</h1>
+          <div className="mb-10 flex items-center gap-3 px-2">
+            <h1 className="text-2xl font-black tracking-tight">
+              <span className="text-indigo-500">Flow</span><span className="text-white">Desk</span>
+            </h1>
+            <span className="text-[10px] font-bold text-indigo-200 bg-indigo-900/50 px-2 py-0.5 rounded border border-indigo-500/30 uppercase tracking-widest self-end mb-1">
+              Admin
+            </span>
           </div>
           
           <nav className="space-y-2">
@@ -53,7 +58,7 @@ export default function AdminLayout({ children }) {
 
         <div className="pt-6 border-t border-zinc-800">
             <button 
-                onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+                onClick={() => signOut({ callbackUrl: '/' })}
                 className="flex items-center gap-3 px-4 py-3 w-full text-left text-zinc-400 hover:bg-red-900/20 hover:text-red-400 rounded-lg transition-colors group"
             >
                 <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
@@ -68,7 +73,9 @@ export default function AdminLayout({ children }) {
       {/* Main Content */}
       <main className="flex-1 overflow-x-hidden md:ml-0 transition-all duration-300">
         <div className="p-8 max-w-7xl mx-auto">
-            {children}
+            <PageTransition>
+                {children}
+            </PageTransition>
         </div>
       </main>
     </div>

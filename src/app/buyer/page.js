@@ -44,34 +44,7 @@ export default function BuyerHome() {
             </div>
         </div>
       </motion.div>
-
-      {/* Featured / Explore Section Placeholder */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-         <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="p-8 bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer group"
-         >
-            <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                <Compass size={24} />
-            </div>
-            <h3 className="text-2xl font-bold mb-2">Explore Ideas</h3>
-            <p className="text-gray-500 mb-4">Browse projects from other buyers to see what's trending in the marketplace.</p>
-            <Link href="/buyer/explore" className="text-purple-600 font-bold underline decoration-2 underline-offset-4 group-hover:text-purple-800">Start Exploring →</Link>
-         </motion.div>
-
-         <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="p-8 bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer group"
-         >
-            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-600 group-hover:text-white transition-colors">
-                <List size={24} />
-            </div>
-            <h3 className="text-2xl font-bold mb-2">Manage Projects</h3>
-            <p className="text-gray-500 mb-4">Track progress, review submissions, and manage your active listings.</p>
-            <Link href="/buyer/my-projects" className="text-green-600 font-bold underline decoration-2 underline-offset-4 group-hover:text-green-800">Go to Dashboard →</Link>
-         </motion.div>
-      </div>
-
+      
     </div>
   );
 }
