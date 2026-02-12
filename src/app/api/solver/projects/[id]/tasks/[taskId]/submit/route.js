@@ -21,13 +21,11 @@ export async function POST(req, { params }) {
         return NextResponse.json({ message: "You are not assigned to this project." }, { status: 403 });
     }
 
-    // Find the specific task subdocument
     const task = project.tasks.id(taskId);
     if (!task) {
         return NextResponse.json({ message: "Task not found" }, { status: 404 });
     }
 
-    // Update task with submission details
     task.status = 'submitted';
     task.submission = {
         zipUrl,

@@ -19,9 +19,6 @@ export async function GET(req) {
     const activeProjects = await Project.countDocuments({ status: 'assigned' });
     const completedProjects = await Project.countDocuments({ status: 'completed' });
     
-    // Recent activity (mock or real if timestamp exists)
-    // Let's just return counts for now.
-
     return NextResponse.json({
       totalUsers,
       totalProjects,

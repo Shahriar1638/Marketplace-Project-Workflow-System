@@ -3,9 +3,9 @@
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-rgb: 255, 255, 255;
-  --color-admin: #18181b; /* Zinc 900 */
-  --color-buyer: #3b82f6; /* Blue 500 */
-  --color-solver: #10b981; /* Emerald 500 */
+  --color-admin: #18181b;
+  --color-buyer: #3b82f6;
+  --color-solver: #10b981;
   --color-primary-black: #000000;
 }
 

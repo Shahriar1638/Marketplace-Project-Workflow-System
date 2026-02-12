@@ -40,7 +40,7 @@ export default function UnassignedProjectView({ project }) {
                     'Project assigned successfully!',
                     'success'
                 );
-                window.location.reload(); // Reload to switch to Assigned View
+                window.location.reload();
             } else {
                 Swal.fire(
                     'Error',

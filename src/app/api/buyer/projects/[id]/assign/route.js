@@ -17,24 +17,18 @@ export async function PATCH(req, { params }) {
     const project = await Project.findById(id);
     if (!project) return NextResponse.json({ message: "Project not found" }, { status: 404 });
 
-    // Update Project Status
     project.status = 'assigned';
     project.assignedSolverId = solverId;
     
-    // Store assignment details
     project.assignmentDetails = {
         estimatedModules,
         estimatedDeadlineForEntireProject: estimatedDeadline
     };
 
-    // Update Request Status
     const requestIndex = project.requests.findIndex(r => r.solverId.toString() === solverId);
     if (requestIndex > -1) {
         project.requests[requestIndex].status = 'accepted';
     }
-
-    // Initialize Tasks Array (Optional: We leave it empty as per request, to be filled by solver later)
-    // project.tasks = []; 
 
     await project.save();
 

@@ -5,12 +5,12 @@ import { NextResponse } from "next/server";
 export async function GET(req, { params }) {
   try {
     await dbConnect();
-    const { id } = await params; // Next.js 15: params is async
+    const { id } = await params;
     
     const project = await Project.findById(id)
         .populate({
             path: 'requests.solverId',
-            select: 'name email profile.skills' // Select specific fields from User
+            select: 'name email profile.skills'
         })
         .populate('assignedSolverId', 'name');
 

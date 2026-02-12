@@ -13,7 +13,6 @@ export default function AssignedProjectView({ project }) {
     const { estimatedModules, estimatedDeadlineForEntireProject } = project.assignmentDetails;
     const completedTasks = project.tasks.filter(t => t.status === 'accepted').length;
     const remainingTasks = Math.max(0, estimatedModules - completedTasks);
-    // Progress based on ACCEPTED tasks
     const progress = Math.min(100, Math.round((completedTasks / estimatedModules) * 100)) || 0;
 
     const handleReview = async (taskId, action) => {
@@ -36,16 +35,15 @@ export default function AssignedProjectView({ project }) {
                 confirmButtonText: 'Reject'
             });
 
-            if (!text) return; // Cancelled
+            if (!text) return;
             feedback = text;
         } else {
-            // Confirm Approve
             const result = await Swal.fire({
                 title: 'Approve Submission?',
                 text: "This task will be marked as complete.",
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#10b981', // green
+                confirmButtonColor: '#10b981',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, Approve!'
             });

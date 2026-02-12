@@ -14,7 +14,6 @@ export async function GET(req) {
 
     await dbConnect();
 
-    // Fetch projects where buyerId matches the logged-in user
     const projects = await Project.find({ buyerId: session.user.id })
                                     .populate('assignedSolverId', 'name')
                                     .sort({ createdAt: -1 });

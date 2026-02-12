@@ -10,14 +10,12 @@ export async function PATCH(req, { params }) {
     if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { id, taskId } = await params;
-    const { action, feedback } = await req.json(); // 'approve' or 'reject'
+    const { action, feedback } = await req.json();
 
     await dbConnect();
     
     const project = await Project.findById(id);
     if (!project) return NextResponse.json({ message: "Project not found" }, { status: 404 });
-
-    // Ensure session user is the buyer
     if (project.buyerId.toString() !== session.user.id) {
         return NextResponse.json({ message: "Unauthorized: You are not the buyer." }, { status: 403 });
     }
@@ -33,8 +31,6 @@ export async function PATCH(req, { params }) {
         task.status = 'accepted';
     } else if (action === 'reject') {
         task.status = 'rejected';
-        // Optional: Could clear submission details to allow re-submission, but maybe keeping history is better?
-        // Let's decide to KEEP history but allow re-submission logic on Solver side if status is rejected.
     } else {
         return NextResponse.json({ message: "Invalid action" }, { status: 400 });
     }

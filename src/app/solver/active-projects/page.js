@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
@@ -42,9 +43,9 @@ export default function ActiveProjects() {
 
             <div className="grid gap-6">
                 {projects.map((project, index) => {
-                     // Determine progress
                      const totalTasks = project.tasks?.length || 0;
                      const completedTasks = project.tasks?.filter(t => t.status === 'accepted').length || 0;
+                     const rejectedTasks = project.tasks?.filter(t => t.status === 'rejected').length || 0;
                      const progressPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
                      return (
@@ -82,7 +83,10 @@ export default function ActiveProjects() {
                             <div className="mb-8">
                                 <div className="flex justify-between text-sm font-bold mb-2">
                                     <span className="text-gray-700">Completion Status</span>
-                                    <span className="text-emerald-600">{completedTasks} / {totalTasks} Tasks Approved</span>
+                                    <span className="text-emerald-600">
+                                        {completedTasks} / {totalTasks} Tasks Approved 
+                                        {rejectedTasks > 0 && <span className="text-red-500 ml-2">({rejectedTasks} Rejected)</span>}
+                                    </span>
                                 </div>
                                 <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
                                     <div 

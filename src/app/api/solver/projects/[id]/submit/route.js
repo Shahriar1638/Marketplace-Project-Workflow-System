@@ -17,15 +17,12 @@ export async function POST(req, { params }) {
     const project = await Project.findById(id);
     if (!project) return NextResponse.json({ message: "Project not found" }, { status: 404 });
 
-    // Validate if current user is the assigned solver
     if (project.assignedSolverId.toString() !== session.user.id) {
         return NextResponse.json({ message: "You are not assigned to this project." }, { status: 403 });
     }
-
-    // Add new task submission
     project.tasks.push({
         title,
-        description: note, // Using description to store the note context if needed, or just keep note in submission
+        description: note,
         status: 'submitted',
         submission: {
             zipUrl,
@@ -33,8 +30,6 @@ export async function POST(req, { params }) {
             note
         }
     });
-
-    // Check if all estimated modules are done? Optional logic
     
     await project.save();
 

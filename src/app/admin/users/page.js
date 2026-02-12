@@ -56,7 +56,7 @@ export default function AdminUsersPage() {
                     timer: 2000,
                     showConfirmButton: false
                 });
-                fetchUsers(); // Refresh list
+                fetchUsers();
             } else {
                 Swal.fire('Error', 'Failed to update role.', 'error');
             }

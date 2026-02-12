@@ -19,10 +19,8 @@ export const uploadFile = async (file) => {
             ID.unique(),
             file
         );
-        
-        // Return view URL
         const filePath =  storage.getFileView(BUCKET_ID, result.$id);
-        return filePath.href || filePath; // Return the string URL, handling both URL object and string return types
+        return filePath.href || filePath;
     } catch (error) {
         console.error("Appwrite upload failed:", error);
         throw error;

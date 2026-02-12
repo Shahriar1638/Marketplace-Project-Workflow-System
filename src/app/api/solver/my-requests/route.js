@@ -10,8 +10,6 @@ export async function GET(req) {
     if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     await dbConnect();
-
-    // Fetch projects where the requests array contains an entry with the current user's ID
     const projects = await Project.find({
         "requests.solverId": session.user.id
     })

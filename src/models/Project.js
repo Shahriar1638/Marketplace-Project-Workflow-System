@@ -9,7 +9,7 @@ const ProjectSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  techStack: [String], // Array of skills/tools e.g., ['React', 'Node.js']
+  techStack: [String],
   buyerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'users',
@@ -24,17 +24,15 @@ const ProjectSchema = new mongoose.Schema({
     estimatedModules: Number,
     estimatedDeadlineForEntireProject: String // YYYY-MM-DD
   },
-  // List of solvers who requested to work on this
   requests: [{
     solverId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     estimatedModules: Number,
     description: String,
     deadline: String,
-    phoneNumber: String, // Optional, only if shared
+    phoneNumber: String,
     status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
     submittedAt: { type: String, default: () => new Date().toISOString().split('T')[0] }
   }],
-  // Tasks/Milestones created by Solver (or Buyer initially)
   tasks: [{
     title: String,
     description: String,

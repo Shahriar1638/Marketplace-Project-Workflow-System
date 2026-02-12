@@ -16,7 +16,6 @@ export async function DELETE(req, { params }) {
     const project = await Project.findById(id);
     if (!project) return NextResponse.json({ message: "Project not found" }, { status: 404 });
 
-    // Validate ownership
     if (project.assignedSolverId.toString() !== session.user.id) {
         return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
@@ -24,12 +23,10 @@ export async function DELETE(req, { params }) {
     const task = project.tasks.id(taskId);
     if (!task) return NextResponse.json({ message: "Task not found" }, { status: 404 });
 
-    // Only allow deletion if pending or rejected? Or maybe just not 'accepted'?
     if (task.status === 'accepted') {
         return NextResponse.json({ message: "Cannot delete an accepted task." }, { status: 400 });
     }
 
-    // Remove the task
     project.tasks.pull(taskId);
     await project.save();
 
@@ -65,7 +62,6 @@ export async function PATCH(req, { params }) {
         return NextResponse.json({ message: "Cannot edit an accepted task." }, { status: 400 });
     }
 
-    // Update fields
     if (title) task.title = title;
     if (description) task.description = description;
     if (deadline) task.deadline = deadline;

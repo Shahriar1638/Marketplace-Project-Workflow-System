@@ -15,19 +15,16 @@ export default function ActiveProjectWorkspace() {
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // State for creating new milestone
     const [newTitle, setNewTitle] = useState('');
     const [newDesc, setNewDesc] = useState('');
     const [newDeadline, setNewDeadline] = useState('');
     const [creatingTask, setCreatingTask] = useState(false);
 
-    // State for submitting a task
     const [selectedTask, setSelectedTask] = useState(null);
     const [submissionNote, setSubmissionNote] = useState('');
     const [file, setFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     
-    // Fetch Project Function
     const fetchProject = async () => {
         try {
             const res = await fetch(`/api/solver/projects/${id}`);
@@ -46,7 +43,6 @@ export default function ActiveProjectWorkspace() {
         if(id) fetchProject();
     }, [id]);
 
-    // Handlers
     const handleDeleteTask = async (taskId) => {
         const result = await Swal.fire({
             title: 'Are you sure?',
@@ -163,7 +159,7 @@ export default function ActiveProjectWorkspace() {
                     timer: 2000,
                     showConfirmButton: false
                 });
-                setSelectedTask(null); // Close modal
+                setSelectedTask(null);
                 setSubmissionNote('');
                 setFile(null);
                 fetchProject();
@@ -189,7 +185,6 @@ export default function ActiveProjectWorkspace() {
 
     return (
         <div className="max-w-7xl mx-auto space-y-8 pb-12">
-            {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 pb-6">
                 <div>
                      <button 
@@ -209,11 +204,7 @@ export default function ActiveProjectWorkspace() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
-                {/* LEFT COLUMN: Planning & Creating (2/3 width) */}
                 <div className="lg:col-span-2 space-y-8">
-                    
-                    {/* 1. Add Milestone Card */}
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
                         <div className="flex items-center gap-2 mb-6">
                              <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
@@ -267,8 +258,6 @@ export default function ActiveProjectWorkspace() {
                             </div>
                         </form>
                     </div>
-
-                    {/* 2. Pending Milestones List */}
                     <div>
                         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                              <div className="w-2 h-6 bg-amber-400 rounded-full"></div>
@@ -327,8 +316,6 @@ export default function ActiveProjectWorkspace() {
                         )}
                     </div>
                 </div>
-
-                {/* RIGHT COLUMN: History & Details (1/3 width) */}
                 <div className="space-y-6">
                     <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm sticky top-24">
                         <div className="flex justify-between items-center mb-6">
@@ -381,8 +368,6 @@ export default function ActiveProjectWorkspace() {
                     </div>
                 </div>
             </div>
-
-            {/* SUBMISSION MODAL */}
             {selectedTask && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
                     <motion.div 

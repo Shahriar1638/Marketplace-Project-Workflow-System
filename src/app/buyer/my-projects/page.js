@@ -8,14 +8,11 @@ export default function MyProjectsPage() {
     const { data: session } = useSession();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    // Filter State
     const [titleFilter, setTitleFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
     const [techFilter, setTechFilter] = useState('');
     
-    // Sort State
-    const [sortBy, setSortBy] = useState('date'); // 'date', 'title', 'requests'
+    const [sortBy, setSortBy] = useState('date');
     
     useEffect(() => {
         const fetchMyProjects = async () => {
@@ -33,8 +30,6 @@ export default function MyProjectsPage() {
         };
         if(session) fetchMyProjects();
     }, [session]);
-
-    // Apply Filter & Sort
     const filteredProjects = projects
         .filter(project => {
             const matchesTitle = project.title.toLowerCase().includes(titleFilter.toLowerCase());
@@ -64,8 +59,6 @@ export default function MyProjectsPage() {
                     + New Project
                 </Link>
             </div>
-
-            {/* Filter Controls */}
             <div className="bg-gray-50 p-4 border border-gray-200 mb-6 flex flex-wrap gap-4">
                 <div className="flex-1 min-w-50">
                     <label className="block text-xs font-bold mb-1">Search Title</label>

@@ -19,7 +19,6 @@ const UserSchema = new mongoose.Schema({
     enum: ['User', 'Problem Solver', 'Buyer', 'Admin'],
     default: 'User',
   },
-  // Role upgrade request status
   requestStatus: {
     requestedRole: {
       type: String,
@@ -35,7 +34,6 @@ const UserSchema = new mongoose.Schema({
       default: () => new Date().toISOString().split('T')[0],
     }
   },
-  // Problem Solver specific fields
   profile: {
     bio: String,
     skills: [String],

@@ -21,7 +21,6 @@ export async function POST(req, { params }) {
         return NextResponse.json({ message: "You are not assigned to this project." }, { status: 403 });
     }
 
-    // Add new task (milestone)
     project.tasks.push({
         title,
         description,

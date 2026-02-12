@@ -22,7 +22,6 @@ export default function Home() {
     setError('');
     setLoading(true);
     
-    // Call NextAuth signIn
     const res = await signIn('credentials', {
       redirect: false,
       email: formData.email,
@@ -33,8 +32,7 @@ export default function Home() {
       setError('Invalid email or password');
       setLoading(false);
     } else {
-      // Successful login
-      router.push('/home'); // Auth wrapper will redirect to role page
+      router.push('/home');
     }
   };
 

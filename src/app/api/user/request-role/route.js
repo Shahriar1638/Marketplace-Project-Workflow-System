@@ -27,8 +27,6 @@ export async function POST(req) {
         submittedAt: new Date().toISOString().split('T')[0],
       }
     };
-
-    // If requesting Problem Solver, update profile fields too
     if (requestedRole === 'Problem Solver' && profileData) {
         updateData.profile = {
             bio: profileData.bio,

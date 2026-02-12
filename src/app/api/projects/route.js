@@ -21,9 +21,7 @@ export async function POST(req) {
         description,
         techStack: techStack ? techStack.split(',').map(s => s.trim()).filter(s => s) : [],
         budget,
-        buyerId: session.user.id, // Assign to logged-in user
-        // Deadline passed in body can be stored if you added it to schema, 
-        // or just rely on title/desc/budget for now as per minimal schema.
+        buyerId: session.user.id,
     });
 
     return NextResponse.json({ message: "Project created", projectId: newProject._id }, { status: 201 });

@@ -15,8 +15,6 @@ export async function POST(req) {
     const { projectId, estimatedModules, description, deadline, phoneNumber } = await req.json();
 
     await dbConnect();
-
-    // Check if user already applied
     const project = await Project.findById(projectId);
     if (!project) {
         return NextResponse.json({ message: "Project not found" }, { status: 404 });

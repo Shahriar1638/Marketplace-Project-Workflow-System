@@ -12,19 +12,13 @@ export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/");
-    } else if (status === "authenticated" && session) {
-        // Automatically redirect specific roles to their dashboards
+    if (status === "authenticated" && session) {
         if (session.user.role === 'Buyer') router.push('/buyer');
         else if (session.user.role === 'Problem Solver') router.push('/solver');
         else if (session.user.role === 'Admin') router.push('/admin');
-        // 'User' role stays here
     }
   }, [status, router, session]);
-
-  // Loading State (or redirecting state)
-  // We show this if status is loading, OR if authenticated but supposed to redirect (not 'User')
+  
   const isRedirecting = status === "authenticated" && session?.user?.role !== 'User';
   
   if (status === "loading" || isRedirecting) {
@@ -40,11 +34,8 @@ export default function HomePage() {
         </div>
     );
   }
-
-  // Unauthenticated (will redirect in useEffect, return null to prevent flash)
   if (status === "unauthenticated") return null;
 
-  // View for 'User' role (Registered but not yet upgraded/assigned a specific role)
   if (session && session.user.role === 'User') {
     return (
         <div className="min-h-screen bg-zinc-50 flex flex-col">
@@ -86,5 +77,5 @@ export default function HomePage() {
     );
   }
 
-  return null; // Fallback
+  return null;
 }

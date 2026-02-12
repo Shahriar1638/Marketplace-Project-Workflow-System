@@ -7,8 +7,6 @@ export default function ApplyPage() {
     const { id } = useParams();
     const router = useRouter();
     const { data: session } = useSession();
-    
-    // Form States
     const [estimatedModules, setEstimatedModules] = useState(1);
     const [description, setDescription] = useState('');
     const [deadline, setDeadline] = useState('');

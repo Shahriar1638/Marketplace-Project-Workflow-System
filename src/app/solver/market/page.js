@@ -9,8 +9,6 @@ export default function MarketPlace() {
   const { data: session } = useSession();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-  // Filters
   const [techFilter, setTechFilter] = useState('');
   const [sortOrder, setSortOrder] = useState('newest'); // 'newest', 'oldest'
 
@@ -34,7 +32,6 @@ export default function MarketPlace() {
   const filteredProjects = projects
     .filter(project => {
         if (!techFilter) return true;
-        // Simple case-insensitive search in tech stack array or title/desc
         const search = techFilter.toLowerCase();
         const inStack = project.techStack?.some(tech => tech.toLowerCase().includes(search));
         const inTitle = project.title.toLowerCase().includes(search);

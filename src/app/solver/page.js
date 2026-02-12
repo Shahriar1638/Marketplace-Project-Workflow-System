@@ -10,14 +10,13 @@ export default function SolverDashboard() {
   const [latestProjects, setLatestProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch Latest Projects (limit 8)
   useEffect(() => {
     const fetchLatest = async () => {
         try {
-            const res = await fetch('/api/solver/projects'); // Reusing existing, assuming it returns sorted by date
+            const res = await fetch('/api/solver/projects');
             if (res.ok) {
                 const data = await res.json();
-                setLatestProjects(data.slice(0, 8)); // Top 8
+                setLatestProjects(data.slice(0, 8));
             }
         } catch (error) {
             console.error("Failed to load projects", error);
@@ -121,7 +120,7 @@ export default function SolverDashboard() {
                                         <span>{project.budget ? project.budget.toLocaleString() : 'N/A'}</span>
                                     </div>
                                     <Link 
-                                        href={`/solver/market`} // Ideally this links to a details modal or page, linking to market for now
+                                        href={`/solver/market`}
                                         className="p-2 bg-black text-white rounded-full hover:bg-gray-800 transition shadow-md"
                                         title="View Details"
                                     >

@@ -6,9 +6,8 @@ export async function GET(req) {
   try {
     await dbConnect();
     
-    // Fetch only open/unassigned projects, sorted by newest first
     const projects = await Project.find({ status: 'open' })
-                                  .populate('buyerId', 'name') // Optional: show buyer name
+                                  .populate('buyerId', 'name')
                                   .sort({ createdAt: -1 });
 
     return NextResponse.json(projects);

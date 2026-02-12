@@ -8,7 +8,6 @@ export async function POST(req) {
     await dbConnect();
     const { name, email, password, role, bio, skills, phone, github } = await req.json();
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
@@ -17,18 +16,13 @@ export async function POST(req) {
       );
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user object
     const userData = {
       name,
       email,
       password: hashedPassword,
       role,
     };
-
-    // Add profile data if Problem Solver
     if (role === 'Problem Solver') {
       userData.profile = {
         bio,

@@ -10,10 +10,9 @@ export async function PATCH(req) {
         if (action === 'approve') {
             await User.findByIdAndUpdate(userId, {
                 role: role,
-                "requestStatus.status": "approved", // or we can clear it
-                "requestStatus.role": null // Clear pending request
+                "requestStatus.status": "approved",
+                "requestStatus.role": null
             });
-             // Clear the request status completely to clean up
              await User.findByIdAndUpdate(userId, {
                  $unset: { requestStatus: 1 } 
              });

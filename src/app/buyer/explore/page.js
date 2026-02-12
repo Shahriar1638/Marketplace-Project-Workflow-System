@@ -11,7 +11,6 @@ export default function BuyerExplore() {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                // Reusing the public 'open projects' endpoint
                 const res = await fetch('/api/solver/projects');
                 if (res.ok) {
                     const data = await res.json();

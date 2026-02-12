@@ -66,8 +66,8 @@ export default function MyRequests() {
                   timer: 2000,
                   showConfirmButton: false
               });
-              fetchRequests(); // Refresh data
-              setEditingRequest(null); // Close modal
+              fetchRequests();
+              setEditingRequest(null);
           } else {
               const err = await res.json();
               Swal.fire('Error', err.message, 'error');

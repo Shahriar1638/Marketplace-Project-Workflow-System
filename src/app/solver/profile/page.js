@@ -15,7 +15,7 @@ export default function SolverProfilePage() {
         name: '',
         email: '',
         bio: '',
-        skills: '', // String input for comma separation
+        skills: '',
         phone: '',
         github: ''
     });
@@ -57,8 +57,6 @@ export default function SolverProfilePage() {
         e.preventDefault();
         setSaving(true);
         setMessage('');
-
-        // Process skills string to array
         const skillsArray = formData.skills.split(',').map(s => s.trim()).filter(s => s);
 
         try {

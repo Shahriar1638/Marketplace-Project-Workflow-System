@@ -4,10 +4,9 @@ import { useState } from "react";
 
 export default function UserDashboard() {
   const { data: session } = useSession();
-  const [view, setView] = useState('home'); // 'home', 'buyer-form', 'solver-form'
+  const [view, setView] = useState('home');
   const [message, setMessage] = useState('');
   
-  // Solver Form State
   const [solverData, setSolverData] = useState({
     bio: '',
     skills: '',

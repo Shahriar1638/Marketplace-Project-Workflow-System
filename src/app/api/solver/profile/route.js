@@ -35,7 +35,7 @@ export async function PATCH(req) {
         {
             $set: {
                 "profile.bio": bio,
-                "profile.skills": skills, // Expecting array
+                "profile.skills": skills,
                 "profile.phone": phone,
                 "profile.github": github
             }
