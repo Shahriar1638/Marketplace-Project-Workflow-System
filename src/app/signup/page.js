@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
+ 
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -54,10 +54,10 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-white overflow-hidden">
+    <div className="h-screen flex flex-col md:flex-row bg-white overflow-hidden">
       
       {/* Left Side: Branding / Marketing */}
-      <div className="hidden md:flex md:w-1/2 bg-zinc-900 text-white p-12 flex-col justify-between relative overflow-hidden h-screen">
+      <div className="hidden md:flex md:w-1/2 bg-zinc-900 text-white p-12 flex-col justify-between relative overflow-hidden h-full">
         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10 pointer-events-none"></div>
         <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2"></div>
@@ -96,7 +96,7 @@ export default function SignupPage() {
       </div>
 
       {/* Right Side: Signup Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8 bg-zinc-50 h-full min-h-screen overflow-y-auto">
+      <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8 bg-zinc-50 h-full overflow-y-auto">
         <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}

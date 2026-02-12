@@ -47,6 +47,7 @@ export default function ActiveProjects() {
                      const completedTasks = project.tasks?.filter(t => t.status === 'accepted').length || 0;
                      const rejectedTasks = project.tasks?.filter(t => t.status === 'rejected').length || 0;
                      const progressPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+                     const finalModuleNumber = totalTasks-rejectedTasks
 
                      return (
                         <motion.div
@@ -84,7 +85,7 @@ export default function ActiveProjects() {
                                 <div className="flex justify-between text-sm font-bold mb-2">
                                     <span className="text-gray-700">Completion Status</span>
                                     <span className="text-emerald-600">
-                                        {completedTasks} / {totalTasks} Tasks Approved 
+                                        {completedTasks} / {finalModuleNumber} Tasks Approved 
                                         {rejectedTasks > 0 && <span className="text-red-500 ml-2">({rejectedTasks} Rejected)</span>}
                                     </span>
                                 </div>

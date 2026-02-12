@@ -98,10 +98,10 @@ export default function AdminUsersPage() {
                         onChange={(e) => setRoleFilter(e.target.value)}
                     >
                         <option value="All">All Roles</option>
-                        <option value="user">User</option>
-                        <option value="buyer">Buyer</option>
-                        <option value="solver">Problem Solver</option>
-                        <option value="admin">Admin</option>
+                        <option value="User">User</option>
+                        <option value="Buyer">Buyer</option>
+                        <option value="Problem Solver">Problem Solver</option>
+                        <option value="Admin">Admin</option>
                     </select>
                 </div>
             </div>
@@ -143,21 +143,20 @@ export default function AdminUsersPage() {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <span className={clsx(
                                                 "px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full capitalize",
-                                                user.role === 'admin' ? "bg-purple-100 text-purple-800" :
-                                                user.role === 'buyer' ? "bg-blue-100 text-blue-800" :
-                                                user.role === 'solver' ? "bg-green-100 text-green-800" :
+                                                user.role === 'Admin' ? "bg-purple-100 text-purple-800" :
+                                                user.role === 'Buyer' ? "bg-blue-100 text-blue-800" :
+                                                user.role === 'Problem Solver' ? "bg-green-100 text-green-800" :
                                                 "bg-gray-100 text-gray-800"
                                             )}>
                                                 {user.role}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-500">
-                                            {/* Assuming 'active' if no explicit status field, or use createdAt */}
                                             Active
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             {/* Role Request Actions */}
-                                            {user.requestStatus?.status === 'pending' ? (
+                                            {user.requestStatus?.requestedRole === 'Buyer' || user.requestStatus?.requestedRole === 'Problem Solver' ? (
                                                  <div className="flex items-center justify-end gap-2 bg-amber-50 p-2 rounded-lg border border-amber-200">
                                                     <span className="text-xs text-amber-800 font-bold mr-2">
                                                         Requested: {user.requestStatus.requestedRole}
