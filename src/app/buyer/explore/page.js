@@ -6,6 +6,7 @@ import { Search } from 'lucide-react';
 export default function BuyerExplore() {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const [search, setSearch] = useState('');
 
     useEffect(() => {
@@ -15,9 +16,12 @@ export default function BuyerExplore() {
                 if (res.ok) {
                     const data = await res.json();
                     setProjects(data);
+                } else {
+                    setError(true);
                 }
             } catch (error) {
                 console.error("Failed to load projects", error);
+                setError(true);
             } finally {
                 setLoading(false);
             }
@@ -32,6 +36,11 @@ export default function BuyerExplore() {
 
     return (
         <div className="space-y-8">
+            {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    Failed to load projects. Please try refreshing the page.
+                </div>
+            )}
             <div className="flex flex-col md:flex-row justify-between items-end md:items-center gap-4 border-b border-gray-200 pb-6">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Explore Projects</h1>
@@ -64,7 +73,7 @@ export default function BuyerExplore() {
                                 key={project._id}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
+                                transition={{ delay: Math.min(index * 0.05, 0.5) }}
                                 className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex flex-col h-full"
                             >
                                 <div className="mb-4">

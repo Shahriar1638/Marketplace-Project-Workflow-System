@@ -8,6 +8,7 @@ export default function AdminProjectsPage() {
     const [statusFilter, setStatusFilter] = useState('All');
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -17,9 +18,12 @@ export default function AdminProjectsPage() {
                 if (res.ok) {
                     const data = await res.json();
                     setProjects(data);
+                } else {
+                    setError(true);
                 }
             } catch (error) {
                 console.error("Failed to fetch projects", error);
+                setError(true);
             } finally {
                 setLoading(false);
             }
@@ -30,7 +34,7 @@ export default function AdminProjectsPage() {
     const filteredProjects = projects.filter(project => {
         const matchesStatus = statusFilter === 'All' || project.status === statusFilter;
         const matchesSearch = project.title.toLowerCase().includes(search.toLowerCase()) || 
-                              project.buyerId?.name.toLowerCase().includes(search.toLowerCase());
+                              project.buyerId?.name?.toLowerCase().includes(search.toLowerCase());
         return matchesStatus && matchesSearch;
     });
 
@@ -45,6 +49,11 @@ export default function AdminProjectsPage() {
 
     return (
         <div className="space-y-6">
+             {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    <span>Failed to load projects. Please try refreshing the page.</span>
+                </div>
+             )}
              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-zinc-900">All Projects</h1>

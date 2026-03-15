@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 
-export default function UnassignedProjectView({ project }) {
+export default function UnassignedProjectView({ project, onRefresh }) {
     const router = useRouter();
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [loadingAction, setLoadingAction] = useState(false);
@@ -40,7 +40,8 @@ export default function UnassignedProjectView({ project }) {
                     'Project assigned successfully!',
                     'success'
                 );
-                window.location.reload();
+                if (onRefresh) onRefresh();
+                else window.location.reload();
             } else {
                 Swal.fire(
                     'Error',

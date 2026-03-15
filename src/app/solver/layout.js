@@ -5,7 +5,6 @@ import { signOut } from 'next-auth/react';
 import { Compass, FolderMinus, FolderCheck, User, LogOut, Home } from 'lucide-react';
 import Image from 'next/image';
 import { clsx } from 'clsx';
-import { motion } from 'framer-motion';
 
 export default function SolverLayout({ children }) {
   const pathname = usePathname();
@@ -75,13 +74,7 @@ export default function SolverLayout({ children }) {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-        >
             {children}
-        </motion.div>
       </main>
     </div>
   );

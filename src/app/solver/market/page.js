@@ -11,6 +11,7 @@ export default function MarketPlace() {
   const [loading, setLoading] = useState(true);
   const [techFilter, setTechFilter] = useState('');
   const [sortOrder, setSortOrder] = useState('newest'); // 'newest', 'oldest'
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -19,9 +20,12 @@ export default function MarketPlace() {
         if (res.ok) {
           const data = await res.json();
           setProjects(data);
+        } else {
+          setError(true);
         }
       } catch (error) {
         console.error("Failed to fetch projects", error);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -46,6 +50,13 @@ export default function MarketPlace() {
   if (loading) return (
       <div className="flex justify-center items-center min-h-[60vh]">
           <div className="spinner text-emerald-600"></div>
+      </div>
+  );
+
+  if (error) return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+          <p className="text-red-600 font-medium">Failed to load marketplace projects.</p>
+          <button onClick={() => window.location.reload()} className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition">Retry</button>
       </div>
   );
 
@@ -101,7 +112,7 @@ export default function MarketPlace() {
                     key={project._id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                    transition={{ delay: Math.min(index * 0.05, 0.5) }}
                     className="group bg-white rounded-2xl p-6 border border-zinc-200 hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col h-full relative overflow-hidden"
                 >
                     <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">

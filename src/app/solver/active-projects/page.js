@@ -44,17 +44,21 @@ export default function ActiveProjects() {
             <div className="grid gap-6">
                 {projects.map((project, index) => {
                      const totalTasks = project.tasks?.length || 0;
-                     const completedTasks = project.tasks?.filter(t => t.status === 'accepted').length || 0;
+                     const estimatedModules = project.assignmentDetails?.estimatedModules || 0;
+                     const acceptedTasks = project.tasks?.filter(t => t.status === 'accepted').length || 0;
+                     const submittedTasks = project.tasks?.filter(t => t.status === 'submitted').length || 0;
                      const rejectedTasks = project.tasks?.filter(t => t.status === 'rejected').length || 0;
-                     const progressPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-                     const finalModuleNumber = totalTasks-rejectedTasks
+                     const denominator = Math.max(estimatedModules, totalTasks) || 1;
+                     const acceptedPercent = Math.min(100, Math.round((acceptedTasks / denominator) * 100));
+                     const submittedPercent = Math.min(100 - acceptedPercent, Math.round((submittedTasks / denominator) * 100));
+                     const rejectedPercent = Math.min(100 - acceptedPercent - submittedPercent, Math.round((rejectedTasks / denominator) * 100));
 
                      return (
                         <motion.div
                             key={project._id}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
+                            transition={{ delay: Math.min(index * 0.1, 0.5) }}
                             className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all"
                         >
                             <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-6">
@@ -71,7 +75,7 @@ export default function ActiveProjects() {
                                             </div>
                                             <div className="flex items-center gap-1">
                                                 <Calendar size={14} />
-                                                <span>Due: {project.deadline ? new Date(project.deadline).toLocaleDateString() : 'No Deadline'}</span>
+                                                <span>Due: {project.assignmentDetails?.estimatedDeadlineForEntireProject || 'No Deadline'}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -85,15 +89,35 @@ export default function ActiveProjects() {
                                 <div className="flex justify-between text-sm font-bold mb-2">
                                     <span className="text-gray-700">Completion Status</span>
                                     <span className="text-emerald-600">
-                                        {completedTasks} / {finalModuleNumber} Tasks Approved 
-                                        {rejectedTasks > 0 && <span className="text-red-500 ml-2">({rejectedTasks} Rejected)</span>}
+                                        {acceptedTasks} of {denominator} modules accepted ({acceptedPercent}%)
+                                        {rejectedTasks > 0 && <span className="text-red-500 ml-2">· {rejectedTasks} rejected</span>}
                                     </span>
                                 </div>
-                                <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
-                                    <div 
-                                        className="bg-emerald-500 h-full rounded-full transition-all duration-500 ease-out" 
-                                        style={{ width: `${progressPercent}%` }}
-                                    ></div>
+                                <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden flex">
+                                    {acceptedPercent > 0 && (
+                                        <div 
+                                            className="bg-emerald-500 h-full transition-all duration-500 ease-out" 
+                                            style={{ width: `${acceptedPercent}%` }}
+                                        ></div>
+                                    )}
+                                    {submittedPercent > 0 && (
+                                        <div 
+                                            className="bg-yellow-400 h-full transition-all duration-500 ease-out" 
+                                            style={{ width: `${submittedPercent}%` }}
+                                        ></div>
+                                    )}
+                                    {rejectedPercent > 0 && (
+                                        <div 
+                                            className="bg-red-400 h-full transition-all duration-500 ease-out" 
+                                            style={{ width: `${rejectedPercent}%` }}
+                                        ></div>
+                                    )}
+                                </div>
+                                <div className="flex gap-4 mt-2 text-xs text-gray-500">
+                                    <span className="flex items-center gap-1"><span className="w-2 h-2 bg-emerald-500 rounded-full inline-block"></span> Accepted</span>
+                                    <span className="flex items-center gap-1"><span className="w-2 h-2 bg-yellow-400 rounded-full inline-block"></span> Submitted</span>
+                                    <span className="flex items-center gap-1"><span className="w-2 h-2 bg-red-400 rounded-full inline-block"></span> Rejected</span>
+                                    <span className="flex items-center gap-1"><span className="w-2 h-2 bg-gray-200 rounded-full inline-block"></span> Remaining</span>
                                 </div>
                             </div>
                             

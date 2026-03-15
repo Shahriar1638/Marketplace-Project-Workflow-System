@@ -2,7 +2,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { ArrowLeft, User, Mail, Github, Phone, Code, Save, Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
 import Swal from 'sweetalert2';
 

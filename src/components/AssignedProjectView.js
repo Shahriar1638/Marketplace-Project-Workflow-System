@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Swal from 'sweetalert2';
 
-export default function AssignedProjectView({ project }) {
+export default function AssignedProjectView({ project, onRefresh }) {
     const [loadingAction, setLoadingAction] = useState(false);
 
     if (!project.assignmentDetails) {
@@ -11,9 +11,16 @@ export default function AssignedProjectView({ project }) {
     }
 
     const { estimatedModules, estimatedDeadlineForEntireProject } = project.assignmentDetails;
-    const completedTasks = project.tasks.filter(t => t.status === 'accepted').length;
-    const remainingTasks = Math.max(0, estimatedModules - completedTasks);
-    const progress = Math.min(100, Math.round((completedTasks / estimatedModules) * 100)) || 0;
+    const totalTasks = project.tasks.length;
+    const acceptedTasks = project.tasks.filter(t => t.status === 'accepted').length;
+    const submittedTasks = project.tasks.filter(t => t.status === 'submitted').length;
+    const rejectedTasks = project.tasks.filter(t => t.status === 'rejected').length;
+    const pendingTasks = project.tasks.filter(t => t.status === 'pending').length;
+    const denominator = Math.max(estimatedModules, totalTasks) || 1;
+    const progress = Math.min(100, Math.round((acceptedTasks / denominator) * 100));
+    const submittedPercent = Math.min(100 - progress, Math.round((submittedTasks / denominator) * 100));
+    const rejectedPercent = Math.min(100 - progress - submittedPercent, Math.round((rejectedTasks / denominator) * 100));
+    const remainingModules = Math.max(0, denominator - acceptedTasks);
 
     const handleReview = async (taskId, action) => {
         let feedback = '';
@@ -65,7 +72,8 @@ export default function AssignedProjectView({ project }) {
                     `Task has been ${action === 'approve' ? 'approved' : 'rejected'}.`,
                     'success'
                 );
-                window.location.reload();
+                if (onRefresh) onRefresh();
+                else window.location.reload();
             } else {
                 Swal.fire(
                     'Error',
@@ -95,26 +103,46 @@ export default function AssignedProjectView({ project }) {
                     </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div className="bg-gray-50 p-4 border border-gray-200 text-center">
-                        <span className="block text-3xl font-bold">{completedTasks} / {estimatedModules}</span>
-                        <span className="text-sm text-gray-600">Modules Accepted</span>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div className="bg-green-50 p-4 border border-green-200 text-center rounded-lg">
+                        <span className="block text-3xl font-bold text-green-700">{acceptedTasks}</span>
+                        <span className="text-sm text-green-600">Accepted</span>
                     </div>
-                    <div className="bg-gray-50 p-4 border border-gray-200 text-center">
-                         <span className="block text-3xl font-bold">{remainingTasks}</span>
-                         <span className="text-sm text-gray-600">Modules Remaining</span>
+                    <div className="bg-yellow-50 p-4 border border-yellow-200 text-center rounded-lg">
+                        <span className="block text-3xl font-bold text-yellow-700">{submittedTasks}</span>
+                        <span className="text-sm text-yellow-600">Awaiting Review</span>
                     </div>
-                    <div className="bg-gray-50 p-4 border border-gray-200 text-center">
+                    <div className="bg-gray-50 p-4 border border-gray-200 text-center rounded-lg">
+                         <span className="block text-3xl font-bold">{remainingModules}</span>
+                         <span className="text-sm text-gray-600">Remaining</span>
+                    </div>
+                    <div className="bg-gray-50 p-4 border border-gray-200 text-center rounded-lg">
                         <span className="block text-3xl font-bold">{estimatedDeadlineForEntireProject || 'N/A'}</span>
                         <span className="text-sm text-gray-600">Target Deadline</span>
                     </div>
                 </div>
 
-                {/* Progress Bar */}
-                <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
-                    <div className="bg-green-500 h-4 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
+                {/* Segmented Progress Bar */}
+                <div className="w-full bg-gray-200 rounded-full h-4 mb-2 flex overflow-hidden">
+                    {progress > 0 && (
+                        <div className="bg-green-500 h-4 transition-all duration-500" style={{ width: `${progress}%` }} title={`${acceptedTasks} accepted`}></div>
+                    )}
+                    {submittedPercent > 0 && (
+                        <div className="bg-yellow-400 h-4 transition-all duration-500" style={{ width: `${submittedPercent}%` }} title={`${submittedTasks} submitted`}></div>
+                    )}
+                    {rejectedPercent > 0 && (
+                        <div className="bg-red-400 h-4 transition-all duration-500" style={{ width: `${rejectedPercent}%` }} title={`${rejectedTasks} rejected`}></div>
+                    )}
                 </div>
-                <p className="text-right text-sm font-bold">{progress}% Completed</p>
+                <div className="flex justify-between items-center text-sm">
+                    <div className="flex gap-4">
+                        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 bg-green-500 rounded-full inline-block"></span> Accepted</span>
+                        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 bg-yellow-400 rounded-full inline-block"></span> Submitted</span>
+                        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 bg-red-400 rounded-full inline-block"></span> Rejected</span>
+                        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 bg-gray-200 rounded-full inline-block"></span> Remaining</span>
+                    </div>
+                    <span className="font-bold">{acceptedTasks} of {denominator} modules accepted ({progress}%)</span>
+                </div>
             </div>
 
             <div className="border border-black p-6 bg-white">

@@ -11,6 +11,7 @@ export default function AdminDashboard() {
   });
 
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function fetchStats() {
@@ -19,9 +20,12 @@ export default function AdminDashboard() {
         if (res.ok) {
           const data = await res.json();
           setStats(data);
+        } else {
+          setError(true);
         }
       } catch (error) {
         console.error("Failed to fetch dashboard stats", error);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -32,6 +36,13 @@ export default function AdminDashboard() {
   if (loading) return (
     <div className="flex justify-center items-center h-full">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="flex flex-col items-center justify-center h-full gap-4">
+        <p className="text-red-600 font-medium">Failed to load dashboard data.</p>
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Retry</button>
     </div>
   );
 

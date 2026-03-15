@@ -126,7 +126,7 @@ export default function MyRequests() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ delay: index * 0.1 }}
+                        transition={{ delay: Math.min(index * 0.1, 0.5) }}
                         className="group bg-white rounded-2xl shadow-sm border border-zinc-200 hover:border-emerald-500 hover:shadow-xl transition-all duration-300 flex flex-col h-full relative overflow-hidden"
                     >
                         {/* Status Strip */}

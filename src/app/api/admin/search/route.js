@@ -2,8 +2,15 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import User from '@/models/User';
 import Project from '@/models/Project';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(req) {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== 'Admin') {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
+  }
+
   const { searchParams } = new URL(req.url);
   const type = searchParams.get('type');
   const query = searchParams.get('query') || '';

@@ -183,6 +183,17 @@ export default function ActiveProjectWorkspace() {
     const pendingTasks = project.tasks.filter(t => t.status === 'pending');
     const historyTasks = project.tasks.filter(t => t.status !== 'pending');
 
+    const totalTasks = project.tasks.length;
+    const estimatedModules = project.assignmentDetails?.estimatedModules || 0;
+    const acceptedCount = project.tasks.filter(t => t.status === 'accepted').length;
+    const submittedCount = project.tasks.filter(t => t.status === 'submitted').length;
+    const rejectedCount = project.tasks.filter(t => t.status === 'rejected').length;
+    const pendingCount = project.tasks.filter(t => t.status === 'pending').length;
+    const progressDenominator = Math.max(estimatedModules, totalTasks) || 1;
+    const acceptedPercent = Math.min(100, Math.round((acceptedCount / progressDenominator) * 100));
+    const submittedPercent = Math.min(100 - acceptedPercent, Math.round((submittedCount / progressDenominator) * 100));
+    const rejectedPercent = Math.min(100 - acceptedPercent - submittedPercent, Math.round((rejectedCount / progressDenominator) * 100));
+
     return (
         <div className="max-w-7xl mx-auto space-y-8 pb-12">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 pb-6">
@@ -200,6 +211,54 @@ export default function ActiveProjectWorkspace() {
                 <div className="bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100 flex items-center gap-2 text-emerald-700 font-bold whitespace-nowrap shadow-sm">
                     <Clock size={16} />
                     <span>Project Due: {project.assignmentDetails?.estimatedDeadlineForEntireProject || 'No Date'}</span>
+                </div>
+            </div>
+
+            {/* Project Progress Overview */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                    <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <CheckCircle size={20} className="text-emerald-500" />
+                        Project Progress
+                    </h2>
+                    <span className="text-sm font-bold text-emerald-600">
+                        {acceptedCount} of {progressDenominator} modules accepted ({acceptedPercent}%)
+                    </span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+                        <span className="block text-2xl font-bold text-green-700">{acceptedCount}</span>
+                        <span className="text-xs text-green-600 font-medium">Accepted</span>
+                    </div>
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
+                        <span className="block text-2xl font-bold text-yellow-700">{submittedCount}</span>
+                        <span className="text-xs text-yellow-600 font-medium">In Review</span>
+                    </div>
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-center">
+                        <span className="block text-2xl font-bold text-amber-700">{pendingCount}</span>
+                        <span className="text-xs text-amber-600 font-medium">Pending</span>
+                    </div>
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
+                        <span className="block text-2xl font-bold text-red-700">{rejectedCount}</span>
+                        <span className="text-xs text-red-600 font-medium">Rejected</span>
+                    </div>
+                </div>
+                <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden flex">
+                    {acceptedPercent > 0 && (
+                        <div className="bg-green-500 h-full transition-all duration-500" style={{ width: `${acceptedPercent}%` }}></div>
+                    )}
+                    {submittedPercent > 0 && (
+                        <div className="bg-yellow-400 h-full transition-all duration-500" style={{ width: `${submittedPercent}%` }}></div>
+                    )}
+                    {rejectedPercent > 0 && (
+                        <div className="bg-red-400 h-full transition-all duration-500" style={{ width: `${rejectedPercent}%` }}></div>
+                    )}
+                </div>
+                <div className="flex gap-4 mt-2 text-xs text-gray-500">
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 bg-green-500 rounded-full inline-block"></span> Accepted</span>
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 bg-yellow-400 rounded-full inline-block"></span> Submitted</span>
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 bg-red-400 rounded-full inline-block"></span> Rejected</span>
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 bg-gray-200 rounded-full inline-block"></span> Remaining</span>
                 </div>
             </div>
 
@@ -288,12 +347,6 @@ export default function ActiveProjectWorkspace() {
                                                 <Clock size={12} />
                                                 <span>Due: {task.deadline || 'No Deadline'}</span>
                                             </div>
-                                            {task.status === 'rejected' && task.feedback && (
-                                                <div className="mt-3 p-3 bg-red-50 border border-red-100 rounded text-xs text-red-700">
-                                                    <span className="font-bold flex items-center gap-1 mb-1"><AlertCircle size={12}/> Feedback:</span> 
-                                                    {task.feedback}
-                                                </div>
-                                            )}
                                         </div>
                                         
                                         <div className="flex sm:flex-col gap-2 justify-center sm:border-l sm:pl-4 border-gray-100">
@@ -321,10 +374,10 @@ export default function ActiveProjectWorkspace() {
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                                 <CheckCircle size={20} className="text-emerald-500" />
-                                Completed
+                                Submission History
                             </h2>
                             <span className="text-xs font-bold bg-gray-100 px-2 py-1 rounded-full text-gray-600">
-                                {historyTasks.length} Done
+                                {historyTasks.length} Tasks
                             </span>
                         </div>
                         
@@ -347,6 +400,12 @@ export default function ActiveProjectWorkspace() {
                                             <p className="text-xs text-gray-500 line-clamp-2 mb-3 bg-white p-2 rounded border border-gray-100 italic">
                                                 "{task.submission.note}"
                                             </p>
+                                        )}
+                                        {task.status === 'rejected' && task.feedback && (
+                                            <div className="mb-3 p-2 bg-red-50 border border-red-100 rounded text-xs text-red-700">
+                                                <span className="font-bold flex items-center gap-1 mb-1"><AlertCircle size={12}/> Buyer Feedback:</span>
+                                                {task.feedback}
+                                            </div>
                                         )}
                                         <div className="flex justify-between items-center pt-2 border-t border-gray-200">
                                             <span className="text-[10px] text-gray-400 font-bold">{task.submission?.submittedAt}</span>

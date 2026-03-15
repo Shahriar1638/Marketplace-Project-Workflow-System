@@ -82,7 +82,7 @@ export default function SolverDashboard() {
                             key={project._id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
+                            transition={{ delay: Math.min(index * 0.1, 0.5) }}
                             className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col h-full group"
                         >
                             <div className="flex justify-between items-start mb-4">
@@ -120,7 +120,7 @@ export default function SolverDashboard() {
                                         <span>{project.budget ? project.budget.toLocaleString() : 'N/A'}</span>
                                     </div>
                                     <Link 
-                                        href={`/solver/market`}
+                                        href={`/solver/projects/${project._id}`}
                                         className="p-2 bg-black text-white rounded-full hover:bg-gray-800 transition shadow-md"
                                         title="View Details"
                                     >

@@ -26,7 +26,7 @@ Live Link : https://marketplace-project-workflow-system.vercel.app/
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 14 (App Router), React, Tailwind CSS, Framer Motion, Lucide React.
+- **Frontend**: Next.js 16 (App Router), React 19, Tailwind CSS 4, Framer Motion, Lucide React.
 - **Backend**: Next.js API Routes (Serverless functions).
 - **Database**: MongoDB (via Mongoose).
 - **Authentication**: NextAuth.js (Credentials Provider).
@@ -49,7 +49,7 @@ Live Link : https://marketplace-project-workflow-system.vercel.app/
    Create a `.env.local` file in the root directory and add:
    ```env
    # Database
-   MONGODB_URI=your_mongodb_connection_string
+   DB_URI=your_mongodb_connection_string
 
    # Authentication
    NEXTAUTH_SECRET=your_nextauth_secret

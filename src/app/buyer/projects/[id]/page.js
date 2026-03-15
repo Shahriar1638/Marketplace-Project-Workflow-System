@@ -9,20 +9,21 @@ export default function BuyerProjectDetailsPage() {
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchProject = async () => {
-            try {
-                const res = await fetch(`/api/buyer/projects/${id}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setProject(data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch project", error);
-            } finally {
-                setLoading(false);
+    const fetchProject = async () => {
+        try {
+            const res = await fetch(`/api/buyer/projects/${id}`);
+            if (res.ok) {
+                const data = await res.json();
+                setProject(data);
             }
-        };
+        } catch (error) {
+            console.error("Failed to fetch project", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         if(id) fetchProject();
     }, [id]);
 
@@ -37,8 +38,8 @@ export default function BuyerProjectDetailsPage() {
              </div>
 
              {/* Conditional View Rendering */}
-             {project.status === 'assigned' ? (
-                 <AssignedProjectView project={project} />
+             {project.status === 'assigned' || project.status === 'completed' ? (
+                 <AssignedProjectView project={project} onRefresh={fetchProject} />
              ) : (
                  <UnassignedProjectView project={project} />
              )}

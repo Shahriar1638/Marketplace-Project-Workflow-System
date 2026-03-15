@@ -23,7 +23,7 @@ export default function CreateProjectPage() {
     setMessage('');
 
     try {
-      const res = await fetch('/api/projects', {
+      const res = await fetch('/api/buyer/projects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

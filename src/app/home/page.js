@@ -101,7 +101,10 @@ export default function HomePage() {
                                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                                 Current Status
                             </h3>
-                            <button className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 transition-colors">
+                            <button 
+                                onClick={() => window.location.reload()}
+                                className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 transition-colors"
+                            >
                                 Refresh Status <ArrowRight size={12} />
                             </button>
                         </div>

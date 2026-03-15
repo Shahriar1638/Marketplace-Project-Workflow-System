@@ -9,17 +9,22 @@ export default function AdminUsersPage() {
     const [roleFilter, setRoleFilter] = useState('All');
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [error, setError] = useState(false);
 
     const fetchUsers = async () => {
         setLoading(true);
+        setError(false);
         try {
             const res = await fetch('/api/admin/users');
             if (res.ok) {
                 const data = await res.json();
                 setUsers(data);
+            } else {
+                setError(true);
             }
         } catch (error) {
             console.error("Failed to fetch users", error);
+            setError(true);
         } finally {
             setLoading(false);
         }
@@ -75,6 +80,12 @@ export default function AdminUsersPage() {
 
     return (
         <div className="space-y-6">
+            {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center justify-between">
+                    <span>Failed to load users.</span>
+                    <button onClick={fetchUsers} className="text-sm font-medium underline hover:text-red-900">Retry</button>
+                </div>
+            )}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-zinc-900">Manage Users</h1>

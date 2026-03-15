@@ -1,14 +1,16 @@
 "use client";
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
-import { Home, Compass, FolderPlus, List, LogOut } from 'lucide-react';
+import { Home, Compass, FolderPlus, List, LogOut, Menu, X } from 'lucide-react';
 import { clsx } from 'clsx';
 import PageTransition from '@/components/PageTransition';
 import Image from 'next/image';
 
 export default function BuyerLayout({ children }) {
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
     { name: 'Home', href: '/buyer', icon: Home },
@@ -62,8 +64,14 @@ export default function BuyerLayout({ children }) {
 
                 {/* Right Side Actions */}
                 <div className="flex items-center gap-4">
-                     {/* Mobile Menu Button (Hidden on Desktop) */}
-                     {/* ... (simplified for now) ... */}
+                     {/* Mobile Menu Button */}
+                     <button
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="md:hidden text-gray-500 hover:text-black transition-colors p-2 rounded-full hover:bg-gray-100"
+                        aria-label="Toggle menu"
+                     >
+                        {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                     </button>
 
                      <button 
                         onClick={() => signOut({ callbackUrl: '/' })}
@@ -75,6 +83,32 @@ export default function BuyerLayout({ children }) {
                 </div>
             </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {mobileMenuOpen && (
+            <nav className="md:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1">
+                {navItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    const Icon = item.icon;
+                    return (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={clsx(
+                                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                                isActive
+                                    ? "bg-black text-white shadow-md"
+                                    : "text-gray-600 hover:bg-gray-100 hover:text-black"
+                            )}
+                        >
+                            <Icon size={18} />
+                            <span>{item.name}</span>
+                        </Link>
+                    );
+                })}
+            </nav>
+        )}
       </header>
 
       {/* Main Content */}
